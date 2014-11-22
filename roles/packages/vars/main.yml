@@ -24,8 +24,3 @@ packages:
   - vim-gtk
   - wmctrl
   - zsh
-
-not_working_now:
-  - chmsee
-  - virtualbox-4.3
-  - virtualbox-dkms

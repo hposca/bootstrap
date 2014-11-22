@@ -1,0 +1,21 @@
+---
+- name: "Adding Virtualbox' key"
+  apt_key:
+    url: "https://www.virtualbox.org/download/oracle_vbox.asc"
+
+- name: "Adding Virtualbox' repository"
+  apt_repository:
+    repo: "deb http://download.virtualbox.org/virtualbox/debian trusty contrib"
+
+- name: "Updating apt's cache"
+  apt: update_cache=yes
+
+- name: "Installing Virtualbox"
+  apt:
+    name: virtualbox-4.3
+    state: latest
+
+- name: "Installing Virtualbox-dkms"
+  apt:
+    name: dkms
+    state: latest
