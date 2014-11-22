@@ -1,0 +1,5 @@
+# Information about the necessary Key and List to use can be found at:
+# https://www.playonlinux.com/en/download.html
+
+pol_key: "http://deb.playonlinux.com/public.gpg"
+pol_list: "http://deb.playonlinux.com/playonlinux_trusty.list"

@@ -1,10 +1,10 @@
 ---
 - name: "Adding PlayOnLinux Keys"
   apt_key:
-    url: http://deb.playonlinux.com/public.gpg
+    url: "{{ pol_key }}"
 
 - name: "Adding PlayOnLinux Repository"
-  command: "wget http://deb.playonlinux.com/playonlinux_trusty.list -O /etc/apt/sources.list.d/playonlinux.list"
+  command: "wget {{ pol_list }} -O /etc/apt/sources.list.d/playonlinux.list"
 
 - name: "Updating apt's cache"
   apt: update_cache=yes
