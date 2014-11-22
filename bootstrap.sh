@@ -8,7 +8,7 @@ fi
 # From this point onwards, everything is executed as root
 
 apt-get update
-apt-get install python-dev
+apt-get install -y python-dev python-pip
 pip install --upgrade pip
 pip install --upgrade ansible
 
