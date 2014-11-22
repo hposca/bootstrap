@@ -13,3 +13,4 @@ pip install --upgrade pip
 pip install --upgrade ansible
 
 # TODO: Invoke ansible here
+ansible-playbook bootstrap.yml -i hosts
