@@ -1,10 +1,8 @@
 ---
 packages:
   - boxes
-  - chmsee
   - curl
   - dconf-tools
-  - dropbox
   - git
   - gitg
   - giggle
@@ -15,7 +13,6 @@ packages:
   - iftop
   - iotop
   - mercurial
-  - playonlinux
   - qbittorrent
   - scrot
   - stopwatch
@@ -25,7 +22,12 @@ packages:
   - tree
   - vagrant
   - vim-gtk
-  - virtualbox-4.3
-  - virtualbox-dkms
   - wmctrl
   - zsh
+
+not_working_now:
+  - chmsee
+  - dropbox
+  - playonlinux
+  - virtualbox-4.3
+  - virtualbox-dkms
