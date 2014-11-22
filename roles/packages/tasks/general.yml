@@ -1,0 +1,6 @@
+---
+  - name: "General | Installing packages"
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items: general

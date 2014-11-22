@@ -1,0 +1,6 @@
+---
+  - name: "Monitoring | Installing packages"
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items:  monitoring

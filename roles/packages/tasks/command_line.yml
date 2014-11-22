@@ -1,0 +1,6 @@
+---
+  - name: "Command Line | Installing packages"
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items: command_line

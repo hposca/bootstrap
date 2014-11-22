@@ -2,8 +2,7 @@
   - name: Updating apt's cache
     apt: update_cache=yes cache_valid_time=3600
 
-  - name: Installing packages
-    apt:
-      name: "{{ item }}"
-      state: latest
-    with_items: packages
+  - include: general.yml
+  - include: command_line.yml
+  - include: version_control.yml
+  - include: monitoring.yml

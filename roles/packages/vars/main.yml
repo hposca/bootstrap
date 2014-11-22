@@ -1,26 +1,32 @@
 ---
-packages:
-  - boxes
+general:
   - curl
-  - dconf-tools
-  - git
-  - gitg
-  - giggle
-  - gkrellm
   - gnucash
   - gparted
+  - qbittorrent
+  - stopwatch
+  - vagrant
+  - wget
+  - wmctrl
+
+command_line:
+  - boxes
+  - scrot
+  - terminator
+  - tilda
+  - tree
+  - vim-gtk
+  - zsh
+
+monitoring:
+  - gkrellm
   - htop
   - iftop
   - iotop
+
+version_control:
+  - git
+  - gitg
+  - giggle
   - mercurial
-  - qbittorrent
-  - scrot
-  - stopwatch
-  - terminator
-  - tilda
   - tortoisehg
-  - tree
-  - vagrant
-  - vim-gtk
-  - wmctrl
-  - zsh
