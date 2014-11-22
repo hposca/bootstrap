@@ -1,3 +1,13 @@
+# Intro
+
+Script created to bootstrap my machine when I upgrade to a new distro. (Debian flavour)
+
+# Running
+
+```
+sudo ./bootstrap.sh
+```
+
 # Testing
 
 For basic testing, do the following steps:
