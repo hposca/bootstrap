@@ -1,4 +1,5 @@
 ---
 - hosts: localhost
   roles:
-  - { role: roles/packages }
+  - packages
+  - playonlinux
