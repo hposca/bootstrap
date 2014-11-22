@@ -27,6 +27,5 @@ packages:
 
 not_working_now:
   - chmsee
-  - dropbox
   - virtualbox-4.3
   - virtualbox-dkms

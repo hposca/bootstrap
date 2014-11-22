@@ -3,3 +3,4 @@
   roles:
   - packages
   - playonlinux
+  - dropbox

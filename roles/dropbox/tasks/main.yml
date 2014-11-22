@@ -1,0 +1,5 @@
+---
+- name: "Installing dropbox"
+  shell: curl -L "https://www.dropbox.com/download?plat=lnx.{{ ansible_architecture }}" | tar -C $HOME -xzf - creates={{ lookup('env','HOME') }}/.dropbox-dist/dropboxd
+
+- debug: msg="After this you have to run the Dropbox daemon from the newly created .dropbox-dist folder -> $ ~/.dropbox-dist/dropboxd"
