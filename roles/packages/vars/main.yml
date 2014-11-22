@@ -1,0 +1,31 @@
+---
+packages:
+  - boxes
+  - chmsee
+  - curl
+  - dconf-tools
+  - dropbox
+  - git
+  - gitg
+  - giggle
+  - gkrellm
+  - gnucash
+  - gparted
+  - htop
+  - iftop
+  - iotop
+  - mercurial
+  - playonlinux
+  - qbittorrent
+  - scrot
+  - stopwatch
+  - terminator
+  - tilda
+  - tortoisehg
+  - tree
+  - vagrant
+  - vim-gtk
+  - virtualbox-4.3
+  - virtualbox-dkms
+  - wmctrl
+  - zsh
