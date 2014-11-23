@@ -2,6 +2,7 @@
 - hosts: localhost
   roles:
   - packages
+  - vim
   - playonlinux
   - dropbox
   - virtualbox

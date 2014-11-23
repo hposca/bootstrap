@@ -1,0 +1,22 @@
+---
+- name: "Installing vim"
+  apt: name=vim-gtk state=latest
+
+- name: "Creating .vim directory"
+  file:
+    dest: "{{ lookup('env','HOME') }}/.vim/bundle"
+    state: directory
+    group: "{{ lookup('env','SUDO_USER') }}"
+    owner: "{{ lookup('env','SUDO_USER') }}"
+
+- name: "Getting neoBundle"
+  git:
+    repo: "https://github.com/Shougo/neobundle.vim"
+    dest: "~/.vim/bundle/neobundle.vim"
+
+- name: "Copying vimrc file"
+  copy:
+    src: vimrc
+    dest: "{{ lookup('env','HOME') }}/.vim/vimrc"
+    group: "{{ lookup('env','SUDO_USER') }}"
+    owner: "{{ lookup('env','SUDO_USER') }}"
