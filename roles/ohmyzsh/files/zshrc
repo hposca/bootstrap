@@ -45,13 +45,13 @@ ZSH_THEME="philips"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vagrant)
+plugins=(git vagrant aws screen)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -79,30 +79,36 @@ export LANG=en_US.UTF-8
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-HISTFILE=~/.zhistfile
-HISTSIZE=1000000
-SAVEHIST=1000000
-
 EDITOR='vim'
 
-#Aliases
+# My aliases
 alias lsd='ls -p | grep /$'
-alias hist='history -1000000'
-alias hoje='date +%Y%m%d'
+alias hist='history'
+alias today='date +%Y%m%d'
+alias ff='find . -type f'
+alias fd='find . -type d'
+alias sl='ls'
 
-#Directory stacks
+# Directory stack configuration
 DIRSTACKSIZE=7
 setopt autopushd pushdminus pushdsilent pushdtohome
 alias dirs='dirs -v'
 
-#Histórico
+# History
+
+HISTFILE=~/.zhistfile
+HISTSIZE=1000000
+SAVEHIST=1000000
+
 setopt INC_APPEND_HISTORY # append history as command are entered
 setopt SHARE_HISTORY # share history between open shells
 setopt APPEND_HISTORY # each zsh session, upon exiting, append to the history file
 setopt EXTENDED_HISTORY # saves timestamps on history
 
-#Opção para deixar o grep colorido
-export GREP_OPTIONS='--color=auto'
+######################################
+# Application specific configuration #
+######################################
+export ANSIBLE_NOCOWS=1
 
-# Fazendo o gpg não exibir uma daquelas janelas pedindo senha
+# No password window for gpg
 alias gpg='gpg --no-use-agent'
