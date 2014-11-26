@@ -42,6 +42,7 @@ NeoBundle 'vim-scripts/JavaScript-Indent'
 NeoBundle 'gundo'                         "  Gundo - Undo, in small pieces
 NeoBundle 'minibufexpl.vim'               "  Mini-buffer explorer
 NeoBundle "vim-scripts/TaskList.vim"      "  Better Organize your TODOs
+NeoBundle 'tpope/vim-dispatch'            "  Kick off builds and test suites
 
 call neobundle#end()
 filetype plugin indent on " required
@@ -146,6 +147,27 @@ set statusline+=\ %P                            " percent through file
 """"""""""""""""""""""""
 au BufRead,BufNewFile *.md set filetype=markdown
 au FileType markdown setlocal ts=4 sts=4 sw=4
+
+"""""""""""""
+"LaTeX things
+"""""""""""""
+" Compiles TeX when you save it
+" Requires Tim Pope's vim-dispatch plugin
+au FileType tex let b:dispatch = 'pdflatex -shell-escape %'
+au BufWritePost *.tex :Dispatch!
+
+" section jumping, from: http://vim.wikia.com/wiki/Section_jump_in_Latex
+noremap <buffer> <silent> ]] :<c-u>call TexJump2Section( v:count1, '' )<CR>
+noremap <buffer> <silent> [[ :<c-u>call TexJump2Section( v:count1, 'b' )<CR>
+function! TexJump2Section( cnt, dir )
+  let i = 0
+  let pat = '^\s*\\\(part\|chapter\|\(sub\)*section\|paragraph\)\>\|\%$\|\%^'
+   let flags = 'W' . a:dir
+   while i < a:cnt && search( pat, flags ) > 0
+     let i = i+1
+   endwhile
+   let @/ = pat
+ endfunction
 
 """"""""
 " Dica "
