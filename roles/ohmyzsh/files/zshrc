@@ -81,13 +81,22 @@ export LANG=en_US.UTF-8
 
 EDITOR='vim'
 
-# My aliases
+##############
+# My aliases #
+##############
 alias lsd='ls -p | grep /$'
 alias hist='history'
 alias today='date +%Y%m%d'
 alias ff='find . -type f'
 alias fd='find . -type d'
 alias sl='ls'
+
+###################
+# Vagrant aliases #
+###################
+alias vup='vagrant up'
+alias vdf='vagrant destroy -f'
+alias vh='vagrant halt'
 
 # Directory stack configuration
 DIRSTACKSIZE=7
