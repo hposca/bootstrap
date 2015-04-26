@@ -1,0 +1,26 @@
+---
+- name: "Installing necessary packages"
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+  - python
+  - python-dbus
+  - python-gtk2
+  - python-wnck
+  - python-xlib
+
+- name: "Cloning quicktile repository"
+  git:
+    repo: "https://github.com/ssokolow/quicktile.git"
+    dest: "{{ lookup('env','HOME') }}/quicktile"
+
+- name: "Moving configuration file"
+  copy:
+    src: quicktile.cfg
+    dest: "{{ lookup('env','HOME') }}/.config/"
+
+- name: "Installing"
+  shell: "sudo ./setup.py install"
+  args:
+    chdir: "{{ lookup('env','HOME') }}/quicktile/"
