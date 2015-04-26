@@ -12,8 +12,8 @@ general:
 command_line:
   - boxes
   - scrot
-  - terminator
   - tilda
+  - tmux
   - tree
   - zsh
 
@@ -24,8 +24,9 @@ monitoring:
   - iotop
 
 version_control:
+  - giggle
   - git
   - gitg
-  - giggle
   - mercurial
+  - tig
   - tortoisehg
