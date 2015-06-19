@@ -8,6 +8,7 @@ general:
   - vagrant
   - wget
   - wmctrl
+  - xclip
 
 command_line:
   - boxes
