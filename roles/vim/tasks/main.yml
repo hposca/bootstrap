@@ -2,6 +2,11 @@
 - name: "Installing vim"
   apt: name=vim-gtk state=latest
 
+- name: "Installing the Silver Searcher"
+  apt:
+    name: silversearcher-ag
+    state: latest
+
 - name: "Creating .vim directory"
   file:
     dest: "{{ lookup('env','HOME') }}/.vim/bundle"
