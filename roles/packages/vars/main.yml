@@ -23,6 +23,7 @@ monitoring:
   - htop
   - iftop
   - iotop
+  - ncdu
 
 version_control:
   - giggle
