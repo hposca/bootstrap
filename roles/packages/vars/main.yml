@@ -11,6 +11,7 @@ general:
 
 command_line:
   - boxes
+  - ipcalc
   - scrot
   - terminator
   - tilda
