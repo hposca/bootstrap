@@ -20,13 +20,13 @@ ZSH_THEME="philips"
 # DISABLE_LS_COLORS="true"
 
 # Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -45,7 +45,13 @@ ZSH_THEME="philips"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git vagrant aws screen)
+#
+# To activate the zsh-syntax-highlighting plugin:
+# cd ~/.oh-my-zsh/custom/plugins
+# git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
+
+plugins=(git vagrant aws zsh-syntax-highlighting colored-man tmux)
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -57,6 +63,7 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
 
+export EDITOR='vim'
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
 #   export EDITOR='vim'
@@ -69,6 +76,11 @@ export LANG=en_US.UTF-8
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+
+# # Open tmux on every shell login
+# # If not running interactively, do not do anything
+# [[ $- != *i* ]] && return
+# [[ -z "$TMUX" ]] && exec tmux -2
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -87,16 +99,55 @@ EDITOR='vim'
 alias lsd='ls -p | grep /$'
 alias hist='history'
 alias today='date +%Y%m%d'
+alias hour='date +%H:%M:%S'
 alias ff='find . -type f'
 alias fd='find . -type d'
 alias sl='ls'
+alias kaw='ps aux | grep wine | awk '"'"'{print $2}'"'"' | xargs kill'
+
+###############
+# Git aliases #
+###############
+
+# 'Git Branch Hierarchy'
+alias gbh="git log --graph --simplify-by-decoration --pretty=format:'%d' --all"
+alias gbt="git log --all --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias gdv="git difftool --tool=vimdiff"
+alias gs='gss'
+alias gstsa="git stash save --all --include-untracked"
 
 ###################
 # Vagrant aliases #
 ###################
 alias vup='vagrant up'
+alias vst='vagrant status'
 alias vdf='vagrant destroy -f'
 alias vh='vagrant halt'
+alias vsh='vagrant ssh'
+
+###################
+# Ansible aliases #
+###################
+alias ap="ansible-playbook"
+alias ad="ansible-doc"
+
+##################
+# Docker aliases #
+##################
+alias d="docker"
+alias di="docker images"
+alias dps="docker ps -a"
+alias drm="docker rm"
+alias drma="docker ps -aq | xargs docker stop; docker ps -aq | xargs docker rm"
+alias drmi="docker rmi"
+alias dclean="docker rm -v \$(docker ps -a -q -f status=exited) ; docker rmi \$(docker images -f "dangling=true" -q)"
+
+alias dc="docker-compose"
+alias dcbu="docker-compose build"
+alias dcki="docker-compose kill"
+alias dcps="docker-compose ps"
+alias dcrm="docker-compose rm -f"
+alias dcup="docker-compose up -d"
 
 # Directory stack configuration
 DIRSTACKSIZE=7
@@ -122,8 +173,10 @@ export ANSIBLE_NOCOWS=1
 # No password window for gpg
 alias gpg='gpg --no-use-agent'
 
+alias tmux='tmux -2'
+
 ###############
-# Some tweeks #
+# Some tweaks #
 ###############
 #
 # Update prompt with current time when a command is started
