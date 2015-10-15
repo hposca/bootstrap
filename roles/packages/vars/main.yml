@@ -8,13 +8,14 @@ general:
   - vagrant
   - wget
   - wmctrl
+  - xclip
 
 command_line:
   - boxes
   - ipcalc
   - scrot
-  - terminator
   - tilda
+  - tmux
   - tree
   - zsh
 
@@ -23,10 +24,12 @@ monitoring:
   - htop
   - iftop
   - iotop
+  - ncdu
 
 version_control:
+  - giggle
   - git
   - gitg
-  - giggle
   - mercurial
+  - tig
   - tortoisehg

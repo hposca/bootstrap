@@ -1,6 +1,6 @@
 ---
 - name: "Installing Oh-My-Zshell"
-  shell: curl -L http://install.ohmyz.sh | sh
+  shell: curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh
   ignore_errors: True
 
 - name: "Copying zshrc file"

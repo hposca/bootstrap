@@ -26,3 +26,13 @@ For basic testing, do the following steps:
 1. `vagrant ssh`
 1. `cd /vagrant`
 1. `sudo ./bootstrap.sh`
+
+# Troubleshooting
+
+After running the `bootstrap.sh` script, if you don't have `pip` previously installed, maybe you'll get an error like this:
+
+    ./bootstrap.sh: line 16: /usr/bin/pip: No such file or directory
+    ./bootstrap.sh: Invoking Ansible...
+    ./bootstrap.sh: line 19: ansible-playbook: command not found
+
+Simply run the `bootstrap.sh` script again and everything will run as expected.
