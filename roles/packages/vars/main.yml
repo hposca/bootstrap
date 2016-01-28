@@ -3,6 +3,7 @@ general:
   - curl
   - gnucash
   - gparted
+  - mintstick
   - qbittorrent
   - stopwatch
   - vagrant
