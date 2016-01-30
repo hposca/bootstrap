@@ -3,8 +3,9 @@
   roles:
   - packages
   - vim
-  - playonlinux
+  - docker
   - dropbox
   - virtualbox
   - ohmyzsh
   - quicktile
+  - playonlinux

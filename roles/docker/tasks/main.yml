@@ -1,0 +1,10 @@
+---
+- name: "Installing Docker"
+  shell: curl -sSL https://get.docker.com/ | sh
+  ignore_errors: True
+
+- name: "Adding current user to docker group"
+  user:
+    name: "{{ lookup('env', 'USER') }}"
+    groups: docker
+    append: yes
