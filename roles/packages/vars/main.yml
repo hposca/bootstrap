@@ -2,6 +2,7 @@
 general:
   - curl
   - gnucash
+  - gnupg
   - gparted
   - mintstick
   - qbittorrent
