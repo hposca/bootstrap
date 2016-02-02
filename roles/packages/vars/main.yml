@@ -28,6 +28,10 @@ monitoring:
   - iotop
   - ncdu
 
+programming:
+  - ipython
+  - irb
+
 version_control:
   - giggle
   - git

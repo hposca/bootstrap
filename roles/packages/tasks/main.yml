@@ -6,3 +6,4 @@
   - include: command_line.yml
   - include: version_control.yml
   - include: monitoring.yml
+  - include: programming.yml

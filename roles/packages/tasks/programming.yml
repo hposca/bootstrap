@@ -1,0 +1,6 @@
+---
+  - name: "Programming | Installing packages"
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items:  programming
