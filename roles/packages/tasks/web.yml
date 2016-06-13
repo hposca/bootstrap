@@ -1,0 +1,6 @@
+---
+  - name: "Web | Installing packages"
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items:  web

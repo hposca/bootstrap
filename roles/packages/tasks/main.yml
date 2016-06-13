@@ -7,3 +7,4 @@
   - include: version_control.yml
   - include: monitoring.yml
   - include: programming.yml
+  - include: web.yml

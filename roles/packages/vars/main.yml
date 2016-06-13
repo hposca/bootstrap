@@ -15,7 +15,6 @@ general:
 
 command_line:
   - boxes
-  - ipcalc
   - scrot
   - tilda
   - tmux
@@ -40,3 +39,9 @@ version_control:
   - mercurial
   - tig
   - tortoisehg
+
+web:
+  - dig
+  - ipcalc
+  - lynx
+  - whois
