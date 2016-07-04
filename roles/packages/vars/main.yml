@@ -41,7 +41,7 @@ version_control:
   - tortoisehg
 
 web:
-  - dig
+  - dnsutils
   - ipcalc
   - lynx
   - whois
