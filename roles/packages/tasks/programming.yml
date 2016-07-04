@@ -3,4 +3,4 @@
     apt:
       name: "{{ item }}"
       state: latest
-    with_items:  programming
+    with_items:  "{{ programming }}"

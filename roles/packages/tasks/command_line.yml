@@ -3,4 +3,4 @@
     apt:
       name: "{{ item }}"
       state: latest
-    with_items: command_line
+    with_items: "{{ command_line }}"
