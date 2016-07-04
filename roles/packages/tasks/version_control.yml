@@ -3,4 +3,4 @@
     apt:
       name: "{{ item }}"
       state: latest
-    with_items: version_control
+    with_items: "{{ version_control }}"

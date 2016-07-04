@@ -5,9 +5,11 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "ubuntu"
-
-  config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/utopic/current/utopic-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box = "bento/ubuntu-16.04"
+  # Disabling automatically update check
+  # To force update:
+  # vagrant box update
+  config.vm.box_check_update = false
 
   config.vm.network :private_network, ip: "192.168.2.2"
 

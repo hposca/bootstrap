@@ -1,0 +1,24 @@
+---
+
+- name: "Getting junegunn/fzf"
+  git:
+    repo: https://github.com/junegunn/fzf.git
+    depth: 1
+    dest: "{{ ansible_env.HOME }}/.fzf"
+    accept_hostkey: true
+
+- name: "Installing ncurses"
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - libncurses5-dev
+    - libncursesw5-dev
+
+- name: "Installing curses gem"
+  gem:
+    name: "curses"
+    state: latest
+
+- name: "Installing fzf"
+  shell: "{{ ansible_env.HOME }}/.fzf/install --all"

@@ -3,4 +3,4 @@
     apt:
       name: "{{ item }}"
       state: latest
-    with_items: general
+    with_items: "{{ general }}"

@@ -12,6 +12,7 @@ echo -e "\n$0: INFO: -- Before Installation -- Total number of packages installe
 echo -e "$0: Installing basic packages...\n"
 apt-get update
 apt-get install -y python-dev python-pip
+export LC_ALL=C
 pip install --upgrade pip
 pip install --upgrade ansible
 
