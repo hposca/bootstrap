@@ -5,14 +5,13 @@
 
 - name: "Adding Virtualbox' repository"
   apt_repository:
-    repo: "deb http://download.virtualbox.org/virtualbox/debian trusty contrib"
-
-- name: "Updating apt's cache"
-  apt: update_cache=yes
+    repo: "deb http://download.virtualbox.org/virtualbox/debian xenial contrib"
+    update_cache: yes
 
 - name: "Installing Virtualbox"
   apt:
-    name: virtualbox-4.3
+    name: virtualbox-5.1
+    allow_unauthenticated: yes
     state: latest
 
 - name: "Installing Virtualbox-dkms"
