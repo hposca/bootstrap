@@ -7,6 +7,11 @@
     dest: "{{ ansible_env.HOME }}/.fzf"
     accept_hostkey: true
 
+- name: "Installing ruby-dev"
+  apt:
+    name: "ruby-dev"
+    state: latest
+
 - name: "Installing ncurses"
   apt:
     name: "{{ item }}"
