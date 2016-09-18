@@ -4,6 +4,8 @@ general:
   - gnucash
   - gnupg
   - gparted
+  - graphviz
+  - jq
   - kazam
   - mintstick
   - qbittorrent
@@ -36,6 +38,7 @@ version_control:
   - giggle
   - git
   - gitg
+  - meld
   - mercurial
   - tig
   - tortoisehg
