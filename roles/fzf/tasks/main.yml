@@ -6,6 +6,7 @@
     update_cache: yes
     cache_valid_time: 3600
   with_items:
+    - git
     - libncurses5-dev
     - libncursesw5-dev
     - ruby-dev
