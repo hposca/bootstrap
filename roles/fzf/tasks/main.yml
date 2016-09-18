@@ -1,24 +1,28 @@
 ---
+- name: "Installing needed packages"
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - libncurses5-dev
+    - libncursesw5-dev
+    - ruby-dev
 
 - name: "Getting junegunn/fzf"
   git:
     repo: https://github.com/junegunn/fzf.git
     depth: 1
-    dest: "{{ ansible_env.HOME }}/.fzf"
+    dest: "{{ real_user_home }}/.fzf"
     accept_hostkey: true
 
-- name: "Installing ruby-dev"
-  apt:
-    name: "ruby-dev"
-    state: latest
-
-- name: "Installing ncurses"
-  apt:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - libncurses5-dev
-    - libncursesw5-dev
+- name: "Granting permissions for the user"
+  file:
+    dest: "{{ real_user_home }}/.fzf"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+    recurse: yes
 
 - name: "Installing curses gem"
   gem:
@@ -26,4 +30,4 @@
     state: latest
 
 - name: "Installing fzf"
-  shell: "{{ ansible_env.HOME }}/.fzf/install --all"
+  shell: "{{ real_user_home }}/.fzf/install --all"
