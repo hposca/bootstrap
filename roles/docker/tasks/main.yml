@@ -5,6 +5,6 @@
 
 - name: "Adding current user to docker group"
   user:
-    name: "{{ lookup('env', 'USER') }}"
+    name: "{{ real_user }}"
     groups: docker
     append: yes

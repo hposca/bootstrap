@@ -9,10 +9,10 @@
 
 - name: "Creating .vim directory"
   file:
-    dest: "{{ lookup('env','HOME') }}/.vim/bundle"
+    dest: "{{ real_user_home }}/.vim/bundle"
     state: directory
-    group: "{{ lookup('env','SUDO_USER') }}"
-    owner: "{{ lookup('env','SUDO_USER') }}"
+    group: "{{ real_user_group }}"
+    owner: "{{ real_user }}"
 
 - name: "Getting neoBundle"
   git:
@@ -22,6 +22,6 @@
 - name: "Copying vimrc file"
   copy:
     src: vimrc
-    dest: "{{ lookup('env','HOME') }}/.vim/vimrc"
-    group: "{{ lookup('env','SUDO_USER') }}"
-    owner: "{{ lookup('env','SUDO_USER') }}"
+    dest: "{{ real_user_home }}/.vim/vimrc"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"

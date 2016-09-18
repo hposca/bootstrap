@@ -6,6 +6,6 @@
 - name: "Copying zshrc file"
   copy:
     src: zshrc
-    dest: "{{ lookup('env','HOME') }}/.zshrc"
-    group: "{{ lookup('env','SUDO_USER') }}"
-    owner: "{{ lookup('env','SUDO_USER') }}"
+    dest: "{{ real_user_home }}/.zshrc"
+    group: "{{ real_user_group }}"
+    owner: "{{ real_user }}"
