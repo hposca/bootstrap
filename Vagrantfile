@@ -13,14 +13,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.network :private_network, ip: "192.168.2.2"
 
+  config.vm.synced_folder ".", "/vagrant"
+
   config.vm.provider :virtualbox do |vb|
     # vb.gui = true
-
-    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--memory", "4096"]
   end
 
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
   end
-
 end

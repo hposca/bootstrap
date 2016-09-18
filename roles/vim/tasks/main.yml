@@ -1,27 +1,37 @@
 ---
-- name: "Installing vim"
-  apt: name=vim-gtk state=latest
-
-- name: "Installing the Silver Searcher"
+- name: "Install vim"
   apt:
-    name: silversearcher-ag
+    name: "{{ item }}"
     state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - vim
+    - vim-gtk
+    - silversearcher-ag
 
 - name: "Creating .vim directory"
   file:
-    dest: "{{ lookup('env','HOME') }}/.vim/bundle"
     state: directory
-    group: "{{ lookup('env','SUDO_USER') }}"
-    owner: "{{ lookup('env','SUDO_USER') }}"
+    dest: "{{ real_user_home }}/.vim/bundle"
+    group: "{{ real_user_group }}"
+    owner: "{{ real_user }}"
 
 - name: "Getting neoBundle"
   git:
     repo: "https://github.com/Shougo/neobundle.vim"
-    dest: "~/.vim/bundle/neobundle.vim"
+    dest: "{{ real_user_home }}/.vim/bundle/neobundle.vim"
 
 - name: "Copying vimrc file"
   copy:
     src: vimrc
-    dest: "{{ lookup('env','HOME') }}/.vim/vimrc"
-    group: "{{ lookup('env','SUDO_USER') }}"
-    owner: "{{ lookup('env','SUDO_USER') }}"
+    dest: "{{ real_user_home }}/.vimrc"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+
+- name: "Granting permissions for the user"
+  file:
+    dest: "{{ real_user_home }}/.vim"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+    recurse: yes

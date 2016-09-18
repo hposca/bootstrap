@@ -8,7 +8,7 @@
 # https://linux.dropbox.com/ubuntu/dists/
 - name: "Adding repository"
   apt_repository:
-    repo: "deb http://linux.dropbox.com/ubuntu utopic main"
+    repo: "deb http://linux.dropbox.com/ubuntu xenial main"
 
 - name: "Installing package"
   apt:

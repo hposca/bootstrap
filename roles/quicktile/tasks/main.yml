@@ -3,6 +3,8 @@
   apt:
     name: "{{ item }}"
     state: latest
+    update_cache: yes
+    cache_valid_time: 3600
   with_items:
   - python
   - python-dbus
@@ -13,14 +15,29 @@
 - name: "Cloning quicktile repository"
   git:
     repo: "https://github.com/ssokolow/quicktile.git"
-    dest: "{{ lookup('env','HOME') }}/quicktile"
+    dest: "{{ real_user_home }}/quicktile"
+
+- name: "Granting permissions for the user"
+  file:
+    dest: "{{ real_user_home }}/quicktile"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+    recurse: yes
+
+- name: "Installing"
+  shell: "./setup.py install"
+  become: yes
+  args:
+    chdir: "{{ real_user_home }}/quicktile/"
 
 - name: "Moving configuration file"
   copy:
     src: quicktile.cfg
-    dest: "{{ lookup('env','HOME') }}/.config/"
+    dest: "{{ real_user_home }}/.config/"
 
-- name: "Installing"
-  shell: "sudo ./setup.py install"
-  args:
-    chdir: "{{ lookup('env','HOME') }}/quicktile/"
+- name: "Granting permissions for the user"
+  file:
+    dest: "{{ real_user_home }}/.config"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+    recurse: yes

@@ -1,11 +1,34 @@
 ---
-- name: "Installing Oh-My-Zshell"
-  shell: curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh
-  ignore_errors: True
+- name: "Install zsh"
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - git
+    - zsh
+
+- name: "Clone oh-my-zsh repo"
+  git:
+    repo: https://github.com/robbyrussell/oh-my-zsh.git
+    dest: "{{ real_user_home }}/.oh-my-zsh"
+
+- name: "Granting permissions for the user"
+  file:
+    dest: "{{ real_user_home }}/.oh-my-zsh"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+    recurse: yes
+
+- name: "Setting zsh as default shell"
+  user:
+    name: "{{ real_user }}"
+    shell: /bin/zsh
 
 - name: "Copying zshrc file"
   copy:
     src: zshrc
-    dest: "{{ lookup('env','HOME') }}/.zshrc"
-    group: "{{ lookup('env','SUDO_USER') }}"
-    owner: "{{ lookup('env','SUDO_USER') }}"
+    dest: "{{ real_user_home }}/.zshrc"
+    group: "{{ real_user_group }}"
+    owner: "{{ real_user }}"
