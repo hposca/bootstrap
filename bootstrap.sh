@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-real_user=$(logname)
+#real_user=$(logname)
+real_user=$(who | tail | awk '{ print $1 }')
 real_user_group=$(getent group $real_user | awk -F: '{ print $1 }')
 real_user_home=$(eval echo ~$real_user)
 
