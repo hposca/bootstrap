@@ -10,6 +10,11 @@
   apt_repository:
     repo: "deb http://linux.dropbox.com/ubuntu xenial main"
 
+- name: "Installing necessary packages"
+  apt:
+    name: "python-gpgme"
+    state: latest
+
 - name: "Installing package"
   apt:
     name: "dropbox"
