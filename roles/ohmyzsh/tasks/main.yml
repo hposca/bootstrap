@@ -32,3 +32,8 @@
     dest: "{{ real_user_home }}/.zshrc"
     group: "{{ real_user_group }}"
     owner: "{{ real_user }}"
+
+- name: "Cloning zsh-syntax-highlighting"
+  git:
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+    dest: "{{ real_user_home }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/"
