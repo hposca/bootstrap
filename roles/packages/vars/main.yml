@@ -1,6 +1,7 @@
 ---
 general:
   - curl
+  - digikam
   - gnucash
   - gnupg
   - gparted
