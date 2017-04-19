@@ -3,6 +3,10 @@
   apt_repository:
     repo: 'ppa:ubuntu-mozilla-daily/ppa'
     update_cache: yes
+  become: yes
 
 - name: "Install firefox-trunk"
+  apt:
     name: firefox-trunk
+    state: latest
+  become: yes
