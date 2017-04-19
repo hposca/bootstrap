@@ -1,0 +1,8 @@
+---
+- name: "Add firefox-trunk PPA"
+  apt_repository:
+    repo: 'ppa:ubuntu-mozilla-daily/ppa'
+    update_cache: yes
+
+- name: "Install firefox-trunk"
+    name: firefox-trunk
