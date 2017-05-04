@@ -25,6 +25,7 @@ command_line:
   - zsh
 
 monitoring:
+  - chkrootkit
   - gkrellm
   - htop
   - iftop
