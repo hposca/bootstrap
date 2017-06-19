@@ -16,6 +16,7 @@ general:
   - wget
   - wmctrl
   - xclip
+  - youtube-dl
 
 command_line:
   - boxes
