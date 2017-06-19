@@ -10,6 +10,7 @@ general:
   - kazam
   - mintstick
   - qbittorrent
+  - quicksynergy
   - stopwatch
   - vagrant
   - wget
