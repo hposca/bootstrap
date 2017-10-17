@@ -38,6 +38,7 @@ programming:
   - exuberant-ctags
   - ipython
   - irb
+  - shellcheck
 
 version_control:
   - giggle
