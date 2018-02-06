@@ -39,6 +39,7 @@ programming:
   - ipython
   - irb
   - shellcheck
+  - yamllint
 
 version_control:
   - giggle
