@@ -1,0 +1,30 @@
+---
+- name: "Downloading awless installation script"
+  get_url:
+    url: https://raw.githubusercontent.com/wallix/awless/master/getawless.sh
+    dest: /tmp/install_awless.sh
+    mode: 0755
+
+- name: "Installing awless"
+  shell: "/bin/bash /tmp/install_awless.sh"
+  args:
+    chdir: /tmp/
+
+- name: "Ensure bin directory exists"
+  file:
+    state: directory
+    path: "{{ real_user_home }}/bin"
+
+- name: "Moving binary"
+  copy:
+    src: /tmp/awless
+    dest: "{{ real_user_home }}/bin/awless"
+    mode: 0544
+
+- name: "Set default ownership"
+  file:
+    state: directory
+    recurse: true
+    path: "{{ real_user_home }}/bin"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
