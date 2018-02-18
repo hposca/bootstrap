@@ -1,7 +1,7 @@
 ---
 - name: "Adding Virtualbox' key"
   apt_key:
-    url: "https://www.virtualbox.org/download/oracle_vbox.asc"
+    url: "http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc"
 
 - name: "Adding Virtualbox' repository"
   apt_repository:
@@ -10,11 +10,10 @@
 
 - name: "Installing Virtualbox"
   apt:
-    name: virtualbox-5.1
-    allow_unauthenticated: yes
+    name: "{{ item }}"
     state: latest
-
-- name: "Installing Virtualbox-dkms"
-  apt:
-    name: dkms
-    state: latest
+    update_cache: yes
+  with_items:
+    - virtualbox
+    - virtualbox-qt
+    - virtualbox-dkms
