@@ -2,9 +2,9 @@
   - name: Updating apt's cache
     apt: update_cache=yes cache_valid_time=3600
 
-  - include: general.yml
-  - include: command_line.yml
-  - include: version_control.yml
-  - include: monitoring.yml
-  - include: programming.yml
-  - include: web.yml
+  - include_tasks: general.yml
+  - include_tasks: command_line.yml
+  - include_tasks: version_control.yml
+  - include_tasks: monitoring.yml
+  - include_tasks: programming.yml
+  - include_tasks: web.yml
