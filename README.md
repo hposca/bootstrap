@@ -22,6 +22,7 @@ Few things will need manual intervention after the bootstrap process, like:
 
 For basic testing, do the following steps:
 
+1. `vagrant plugin install vagrant-cachier`
 1. `vagrant up`
 1. `vagrant ssh`
 1. `cd /vagrant`

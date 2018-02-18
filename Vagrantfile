@@ -20,6 +20,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.customize ["modifyvm", :id, "--memory", "4096"]
   end
 
+  # Install it with
+  # vagrant plugin install vagrant-cachier
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
   end
