@@ -3,6 +3,7 @@
   roles:
   - packages
   - vim
+  - git-crypt
   - docker
   - dropbox
   - virtualbox
