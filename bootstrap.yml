@@ -2,14 +2,17 @@
 - hosts: localhost
   roles:
   - packages
-  - vim
-  - docker
-  - dropbox
-  - virtualbox
-  - ohmyzsh
-  - quicktile
-  - playonlinux
-  - fzf
   - python-packages
+  - dropbox
+  - docker
+  - virtualbox
+  - playonlinux
   - firefox-trunk
+  - git-crypt
+  - awless
   - enpass
+  - quicktile
+  - ohmyzsh
+  - fzf
+  - nvim
+  - dotfiles

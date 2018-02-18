@@ -1,15 +1,12 @@
 ---
-- name: "Installing dependencies"
-  apt:
-    name: "{{ item }}"
-    state: latest
-    update_cache: yes
-    cache_valid_time: 3600
-  with_items:
-    - curl
+- name: "Downloading docker installation script"
+  get_url:
+    url: https://get.docker.com/
+    dest: /tmp/install_docker.sh
+    mode: 0755
 
 - name: "Installing Docker"
-  shell: "curl -sSL https://get.docker.com/ | sh"
+  shell: "/bin/sh /tmp/install_docker.sh"
 
 - name: "Adding current user to docker group"
   user:
@@ -18,7 +15,9 @@
     append: yes
 
 - name: "Installing docker-compose"
-  get_url:
-    url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64"
-    dest: /usr/local/bin/docker-compose
-    mode: 0755
+  pip:
+    name: "{{ item }}"
+    extra_args: --upgrade
+  with_items:
+    - pyopenssl
+    - docker-compose

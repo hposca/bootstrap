@@ -20,11 +20,11 @@ apt-get install -y python-dev python-pip libssl-dev python-setuptools
 export LC_ALL=C
 pip install --upgrade setuptools pip ansible
 
-echo -e "$0: Invoking Ansible...\n"
+echo -e "\n\n$0: Invoking Ansible...\n\n"
 ansible-playbook -i hosts bootstrap.yml \
-  -e real_user=$real_user \
-  -e real_user_group=$real_user_group \
-  -e real_user_home=$real_user_home
+  -e real_user="${real_user}" \
+  -e real_user_group="${real_user_group}" \
+  -e real_user_home="${real_user_home}"
 
 packages_after=$(dpkg --get-selections | wc -l)
 echo -e "\n$0: INFO: -- Before Installation -- Total number of packages installed: $packages_before\n"

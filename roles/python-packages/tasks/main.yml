@@ -2,6 +2,7 @@
 - name: "Install python packages"
   pip:
     name: "{{ item}}"
+    extra_args: --upgrade
   with_items:
     - awscli
     - awsebcli

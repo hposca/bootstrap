@@ -1,0 +1,48 @@
+---
+- name: "Install dependencies"
+  apt:
+    name: git
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: "Create directories"
+  file:
+    state: directory
+    recurse: true
+    path: "{{ repos_location }}"
+
+- name: "Clone it"
+  git:
+    repo: 'https://github.com/hposca/dotfiles.git'
+    dest: "{{ repo_location }}"
+
+- name: "Set default ownership"
+  file:
+    state: directory
+    recurse: true
+    path: "{{ repos_location }}"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+
+- name: "Ensure directories for links exists"
+  file:
+    state: directory
+    recurse: true
+    path: "{{ real_user_home }}/{{ item.dir }}"
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+  with_items: "{{ links }}"
+
+- name: "Create symbolic links"
+  file:
+    src: "{{ repo_location }}/{{ item.path }}"
+    dest: "{{ real_user_home }}/{{ item.dir }}/{{ item.dest }}"
+    state: link
+    force: true
+    owner: "{{ real_user }}"
+    group: "{{ real_user_group }}"
+  with_items: "{{ links }}"
+
+- name: "Install neovim plugins"
+  command: nvim "+silent! PlugInstall!" +qall!
