@@ -1,34 +1,31 @@
 ---
 general:
-  - curl
+  - barrier
   - digikam
   - gnucash
   - gnupg
-  - gparted
-  - graphviz
-  - jq
   - kazam
-  - mintstick
   - qbittorrent
-  - quicksynergy
-  - stopwatch
-  - vagrant
-  - wget
-  - wmctrl
-  - xclip
-  - youtube-dl
+  - vlc
 
 command_line:
   - boxes
+  - curl
+  - graphviz
+  - guake
+  - jq
   - scrot
-  - tilda
   - tmux
   - tree
+  - wget
+  - xclip
+  - youtube-dl
   - zsh
 
 monitoring:
   - chkrootkit
   - gkrellm
+  - gparted
   - htop
   - iftop
   - iotop
@@ -36,9 +33,9 @@ monitoring:
 
 programming:
   - exuberant-ctags
-  - ipython
   - irb
   - shellcheck
+  - vagrant
   - yamllint
 
 version_control:
@@ -46,10 +43,8 @@ version_control:
   - git
   - gitg
   - meld
-  - mercurial
-  - tig
-  - tortoisehg
   - qgit
+  - tig
 
 web:
   - dnsutils

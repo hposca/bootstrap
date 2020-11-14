@@ -1,6 +1,0 @@
----
-  - name: "Version Control | Installing packages"
-    apt:
-      name: "{{ item }}"
-      state: latest
-    with_items: "{{ version_control }}"

@@ -1,14 +1,4 @@
 ---
-- name: "Adding PlayOnLinux Keys"
-  apt_key:
-    url: "{{ pol_key }}"
-
-- name: "Adding PlayOnLinux Repository"
-  command: "wget {{ pol_list }} -O /etc/apt/sources.list.d/playonlinux.list"
-
-- name: "Updating apt's cache"
-  apt: update_cache=yes
-
 - name: "Installing PlayOnLinux"
   apt:
     name: playonlinux

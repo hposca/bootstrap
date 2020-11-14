@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # config.vm.box = "bento/ubuntu-16.04"
-  config.vm.box = "ajxb/mint-18.3"
+  config.vm.box = "epipho/mint-20.0"
   # Disabling automatically update check
   # To force update:
   # vagrant box update

@@ -1,12 +1,12 @@
 ---
 - name: "Adding Enpass' key"
   apt_key:
-    url: "https://dl.sinew.in/keys/enpass-linux.key"
+    url: "https://apt.enpass.io/keys/enpass-linux.key"
   become: yes
 
 - name: "Adding Enpass' repository"
   apt_repository:
-    repo: "deb http://repo.sinew.in/ stable main"
+    repo: "deb https://apt.enpass.io/ stable main"
     update_cache: yes
 
 - name: "Installing Enpass"

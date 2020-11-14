@@ -1,12 +1,37 @@
 ---
-- name: "Downloading docker installation script"
-  get_url:
-    url: https://get.docker.com/
-    dest: /tmp/install_docker.sh
-    mode: 0755
+- name: Install dependencies
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - gnupg-agent
 
-- name: "Installing Docker"
-  shell: "/bin/sh /tmp/install_docker.sh"
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Install Docker
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
 
 - name: "Adding current user to docker group"
   user:
@@ -16,8 +41,9 @@
 
 - name: "Installing docker-compose"
   pip:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     extra_args: --upgrade
-  with_items:
+  vars:
+    packages:
     - pyopenssl
     - docker-compose

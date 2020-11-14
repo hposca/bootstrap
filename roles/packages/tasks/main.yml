@@ -2,9 +2,27 @@
   - name: Updating apt's cache
     apt: update_cache=yes cache_valid_time=3600
 
-  - include_tasks: general.yml
-  - include_tasks: command_line.yml
-  - include_tasks: version_control.yml
-  - include_tasks: monitoring.yml
-  - include_tasks: programming.yml
-  - include_tasks: web.yml
+  - name: "General | Installing packages"
+    apt:
+      pkg: "{{ general }}"
+      state: latest
+
+  - name: "Command Line | Installing packages"
+    apt:
+      name: "{{ command_line }}"
+
+  - name: "Version Control | Installing packages"
+    apt:
+      name: "{{ version_control }}"
+
+  - name: "Monitoring | Installing packages"
+    apt:
+      name: "{{ monitoring }}"
+
+  - name: "Programming | Installing packages"
+    apt:
+      name: "{{ programming }}"
+
+  - name: "Web | Installing packages"
+    apt:
+      name: "{{ web }}"

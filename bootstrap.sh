@@ -14,11 +14,11 @@ fi
 
 packages_before=$(dpkg --get-selections | wc -l)
 
-echo -e "$0: Installing basic packages...\n"
-apt-get update
-apt-get install -y python-dev python-pip libssl-dev python-setuptools
-export LC_ALL=C
-pip install --upgrade setuptools pip ansible
+#echo -e "$0: Installing basic packages...\n"
+#apt-get update
+#apt-get install -y python3-dev python3-pip libssl-dev python3-setuptools python-apt
+##export LC_ALL=C
+#pip3 install --upgrade setuptools pip ansible testresources
 
 echo -e "\n\n$0: Invoking Ansible...\n\n"
 ansible-playbook -i hosts bootstrap.yml \

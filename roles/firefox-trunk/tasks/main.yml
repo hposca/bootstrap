@@ -2,7 +2,7 @@
 - name: "Add firefox-trunk PPA"
   apt_repository:
     repo: 'ppa:ubuntu-mozilla-daily/ppa'
-    codename: 'xenial'
+    codename: 'focal'
     update_cache: yes
   become: yes
 
