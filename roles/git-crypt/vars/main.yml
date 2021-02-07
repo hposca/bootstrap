@@ -1,3 +1,0 @@
----
-repos_location: "{{ real_user_home }}/repos"
-repo_location: "{{ repos_location }}/git-crypt"

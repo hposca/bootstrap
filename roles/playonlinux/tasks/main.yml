@@ -1,5 +1,0 @@
----
-- name: "Installing PlayOnLinux"
-  apt:
-    name: playonlinux
-    state: latest

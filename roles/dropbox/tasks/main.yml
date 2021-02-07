@@ -1,5 +1,0 @@
----
-- name: "Installing package"
-  apt:
-    name: "dropbox"
-    state: latest
