@@ -99,6 +99,7 @@ function install_base_packages() {
       firefox-trunk \
       \
       boxes \
+      fonts-powerline \
       graphviz \
       guake \
       jq \
