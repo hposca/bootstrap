@@ -103,7 +103,6 @@ function install_base_packages() {
       guake \
       jq \
       neovim \
-      ripgrep \
       scrot \
       silversearcher-ag \
       tmux \
@@ -151,6 +150,9 @@ function install_base_packages() {
       virtualbox-qt \
       virtualbox-dkms
 
+    # https://askubuntu.com/questions/1290262/unable-to-install-bat-error-trying-to-overwrite-usr-crates2-json-which
+    apt install -y  -o Dpkg::Options::='--force-overwrite' bat ripgrep
+
     log_info 'Adding user to docker group ...'
     usermod -aG docker $(whoami)
 
@@ -188,7 +190,11 @@ function install_python_packages() {
 function install_terminal_tools() {
     log_info "Installing oh-my-zsh ..."
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+    chsh -s "$(command -v zsh)"
+
+    log_info "Installing zsh plugins..."
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
+    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
     log_info "Installing fzf ..."
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
@@ -196,6 +202,21 @@ function install_terminal_tools() {
 
     log_info "Installing plug ..."
     curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+    # If we want to install the latest version of bat:
+    #
+    # log_info "Installing batcat ..."
+    # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
+    # _tmp_dir="$(mktemp -d)"
+    # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+    # | grep "tag_name" \
+    # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
+    # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
+
+    log_info "Configuring bat ..."
+    # https://github.com/sharkdp/bat#on-ubuntu-using-apt
+    mkdir -p ~/.local/bin
+    ln -s /usr/bin/batcat ~/.local/bin/bat
 
     log_info "Installing dotfiles ..."
     local -r dotfiles_dir=~/src/hposca/dotfiles/
