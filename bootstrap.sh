@@ -184,6 +184,7 @@ function install_python_packages() {
     pyopenssl \
     ranger-fm \
     rich \
+    tldr \
     youtube-dl
 }
 
