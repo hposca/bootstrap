@@ -88,6 +88,7 @@ function install_base_packages() {
       gnucash \
       gnupg \
       kazam \
+      pass \
       qbittorrent \
       vlc \
       \
