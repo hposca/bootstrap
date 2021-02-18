@@ -2,13 +2,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+LOCAL_BIN="${HOME}/.local/bin"
 echo "Installing tfenv"
 git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-ln -s ~/.tfenv/bin/* ~/.local/bin
+ln -s ~/.tfenv/bin/* "$LOCAL_BIN"
 
 echo "Installing tgenv"
 git clone https://github.com/cunymatthieu/tgenv.git ~/.tgenv
-ln -s ~/.tgenv/bin/* ~/.local/bin
+ln -s ~/.tgenv/bin/* "$LOCAL_BIN"
 
 echo "Installing pre-commit"
 pip3 install --user pre-commit
@@ -27,7 +28,7 @@ echo "$kubens_filename"
 echo "$kubens_url"
 
 wget "$kubens_url"
-tar -xvf "$kubens_filename" -C ~/bin/ kubens
+tar -xvf "$kubens_filename" -C "${LOCAL_BIN}/" kubens
 
 echo "Installing kubectx"
 kubectx_filename=$(echo "$addresses" | jq -r 'select(.name | contains("kubectx")) | .name')
@@ -36,7 +37,7 @@ echo "$kubectx_filename"
 echo "$kubectx_url"
 
 wget "$kubectx_url"
-tar -xvf "$kubectx_filename" -C ~/bin/ kubectx
+tar -xvf "$kubectx_filename" -C "${LOCAL_BIN}/" kubectx
 
 echo "Installing kubectl"
 
@@ -44,4 +45,4 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
 echo "$(<kubectl.sha256) kubectl" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
 chmod +x ./kubectl
-mv ./kubectl ~/.local/bin/kubectl
+mv ./kubectl "${LOCAL_BIN}/kubectl"
