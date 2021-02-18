@@ -173,6 +173,7 @@ function install_python_packages() {
     awscli \
     black \
     boto3 \
+    bpytop \
     diagrams \
     docker-compose \
     ipython \
