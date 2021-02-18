@@ -57,3 +57,13 @@ delta_url=$(echo "$addresses" | jq -r '.url')
 
 wget "$delta_url"
 tar -xvf "${delta_filename}" --strip-components 1 -C "${LOCAL_BIN}/" "${delta_filename%.*.*}/delta"
+
+echo "Installing k9s"
+tmp_page=$(mktemp)
+curl -s https://api.github.com/repos/derailed/k9s/releases/latest -o "$tmp_page"
+addresses=$(jq -r '.assets[] | select(.name | endswith("Linux_x86_64.tar.gz")) | {url: .browser_download_url, name: .name}' "$tmp_page")
+k9s_filename=$(echo "$addresses" | jq -r '.name')
+k9s_url=$(echo "$addresses" | jq -r '.url')
+
+wget "$k9s_url"
+tar -xvf "${k9s_filename}" -C "${LOCAL_BIN}/" "k9s"
