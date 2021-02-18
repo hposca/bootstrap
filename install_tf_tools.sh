@@ -12,9 +12,6 @@ echo "Installing tgenv"
 git clone https://github.com/cunymatthieu/tgenv.git ~/.tgenv
 ln -s ~/.tgenv/bin/* "$LOCAL_BIN"
 
-echo "Installing pre-commit"
-pip3 install --user pre-commit
-
 echo "Installing kubectx and kubens"
 tmp_page=$(mktemp)
 curl -s https://api.github.com/repos/ahmetb/kubectx/releases/latest -o "$tmp_page"

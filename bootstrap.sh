@@ -182,6 +182,7 @@ function install_python_packages() {
     mkdocs \
     neovim \
     powerline-status \
+    pre-commit \
     psutil \
     pyftpdlib \
     pyopenssl \
