@@ -4,14 +4,6 @@ IFS=$'\n\t'
 
 LOCAL_BIN="${HOME}/.local/bin"
 
-echo "Installing tfenv"
-git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-ln -s ~/.tfenv/bin/* "$LOCAL_BIN"
-
-echo "Installing tgenv"
-git clone https://github.com/cunymatthieu/tgenv.git ~/.tgenv
-ln -s ~/.tgenv/bin/* "$LOCAL_BIN"
-
 echo "Installing kubectx and kubens"
 tmp_page=$(mktemp)
 curl -s https://api.github.com/repos/ahmetb/kubectx/releases/latest -o "$tmp_page"

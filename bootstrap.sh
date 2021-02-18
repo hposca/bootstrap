@@ -21,6 +21,7 @@
 # WHITE='\033[1;37m'
 
 UBUNTU_RELEASE=focal
+LOCAL_BIN="${HOME}/.local/bin"
 
 function log() {
   local -r color="${1}"
@@ -245,6 +246,21 @@ function install_terminal_tools() {
     nvim "+silent! PlugInstall!" +qall!
 }
 
+function simple_git_clone() {
+  local -r name="${1}"
+  local -r repository="${2}"
+  local -r location="${3}"
+
+  log_info "Installing ${name}"
+  git clone "${repository}" "${location}"
+  ln -s "${location}"/bin/* "$LOCAL_BIN"
+}
+
+function install_terminal_tools_plus() {
+  simple_git_clone tfenv https://github.com/tfutils/tfenv.git "${HOME}/.tfenv"
+  simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+}
+
 function main() {
   SECONDS=0
   packages_before=$(dpkg --get-selections | wc -l)
@@ -254,6 +270,7 @@ function main() {
   install_base_packages
   install_python_packages
   install_terminal_tools
+  install_terminal_tools_plus
 
   packages_after=$(dpkg --get-selections | wc -l)
   local -r duration=${SECONDS}
