@@ -67,3 +67,13 @@ k9s_url=$(echo "$addresses" | jq -r '.url')
 
 wget "$k9s_url"
 tar -xvf "${k9s_filename}" -C "${LOCAL_BIN}/" "k9s"
+
+echo "Installing gh_cli"
+tmp_page=$(mktemp)
+curl -s https://api.github.com/repos/cli/cli/releases/latest -o "$tmp_page"
+addresses=$(jq -r '.assets[] | select(.name | endswith("linux_amd64.tar.gz")) | {url: .browser_download_url, name: .name}' "$tmp_page")
+gh_cli_filename=$(echo "$addresses" | jq -r '.name')
+gh_cli_url=$(echo "$addresses" | jq -r '.url')
+
+wget "$gh_cli_url"
+tar -xvf "${gh_cli_filename}" --strip-components 2 -C "${LOCAL_BIN}/" "${gh_cli_filename%.*.*}/bin/gh"
