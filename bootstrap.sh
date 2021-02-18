@@ -227,9 +227,9 @@ function install_terminal_tools() {
       mkdir -p "${dotfiles_dir}"
       git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
     else
-      pushd "${dotfiles_dir}"
+      pushd "${dotfiles_dir}" || exit
       git pull
-      popd
+      popd || exit
     fi
     log_info "Creating symbolic links"
     ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
@@ -258,7 +258,7 @@ function main() {
 
   log_info "Total number of packages before process: ${packages_before}"
   log_info "Total number of packages after process : ${packages_after}"
-  log_info "The entire installation process took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+  log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
 
   log_warn "NOTE: It's recommended that you reboot your computer now."
 }
