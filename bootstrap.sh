@@ -273,13 +273,35 @@ function simple_latest_github_release() {
   tar -xvf "$filename" -C "${LOCAL_BIN}/" "${name}"
 }
 
+function inner_path_latest_github_release() {
+  local -r name="${1}"
+  local -r user_repo="${2}"
+  local -r match="${3}"
+  local -r strip_components="${4}"
+  local -r file_path="${5}"
+
+  log_info "Installing ${name}"
+
+  local -r tmp_page=$(mktemp)
+  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+
+  wget "$url"
+  tar -xvf "$filename" --strip-components "${strip_components}" -C "${LOCAL_BIN}/" "${filename%.*.*}/${file_path}"
+}
+
 function install_terminal_tools_plus() {
-  simple_git_clone tfenv https://github.com/tfutils/tfenv.git "${HOME}/.tfenv"
+  simple_git_clone tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
   simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
 
-  simple_latest_github_release kubens ahmetb/kubectx linux_x86_64.tar.gz
+  simple_latest_github_release kubens  ahmetb/kubectx linux_x86_64.tar.gz
   simple_latest_github_release kubectx ahmetb/kubectx linux_x86_64.tar.gz
-  simple_latest_github_release k9s derailed/k9s Linux_x86_64.tar.gz
+  simple_latest_github_release k9s     derailed/k9s   Linux_x86_64.tar.gz
+
+  inner_path_latest_github_release delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
+  inner_path_latest_github_release gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
 }
 
 function main() {
