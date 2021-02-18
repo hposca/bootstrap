@@ -292,6 +292,16 @@ function inner_path_latest_github_release() {
   tar -xvf "$filename" --strip-components "${strip_components}" -C "${LOCAL_BIN}/" "${filename%.*.*}/${file_path}"
 }
 
+function install_kubectl() {
+  log_info "Installing kubectl"
+
+  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+  echo "$(<kubectl.sha256) kubectl" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  chmod +x ./kubectl
+  mv ./kubectl "${LOCAL_BIN}/kubectl"
+}
+
 function install_terminal_tools_plus() {
   simple_git_clone tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
   simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
@@ -302,6 +312,8 @@ function install_terminal_tools_plus() {
 
   inner_path_latest_github_release delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
   inner_path_latest_github_release gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
+
+  install_kubectl
 }
 
 function main() {
