@@ -302,6 +302,25 @@ function install_kubectl() {
   mv ./kubectl "${LOCAL_BIN}/kubectl"
 }
 
+function install_golang() {
+  local -r download_page="https://golang.org/dl/"
+
+  local -r tmp_page=$(mktemp)
+  curl -s "$download_page" -o "$tmp_page"
+
+  local -r latest_version=$(grep linux-amd64 "$tmp_page" | grep 'download downloadBox' | cut -d'"' -f4 | cut -d'/' -f3)
+  local -r sha=$(grep -A10 "$latest_version" "$tmp_page" | grep "<td><tt>" | sed 's/<[^>]*>//g' | tr -d ' ')
+
+  wget "$download_page$latest_version"
+  echo "${sha} ${latest_version}" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  sudo tar -C /usr/local -xzf "$latest_version"
+
+  # Do not forget to add these environment variables into your ~/.bashrc ~/.zshrc ~/.fishrc file
+  # export GOROOT=/usr/local/go
+  # export GOPATH=$HOME/src/go
+  # export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+}
+
 function install_terminal_tools_plus() {
   simple_git_clone tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
   simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
@@ -314,6 +333,7 @@ function install_terminal_tools_plus() {
   inner_path_latest_github_release gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
 
   install_kubectl
+  install_golang
 }
 
 function main() {
