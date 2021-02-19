@@ -23,7 +23,7 @@
 UBUNTU_RELEASE=focal
 LOCAL_BIN="${HOME}/.local/bin"
 
-function log() {
+function log {
   local -r color="${1}"
   local -r message="${2}"
   local -r timestamp=$(date +"%Y-%m-%d %H:%M:%S")
@@ -32,14 +32,14 @@ function log() {
   echo -e "\n[${timestamp}] ${color}${message}${nocolor}\n"
 }
 
-function log_info() {
+function log_info {
   local -r message="${1}"
   local -r green='\033[0;32m'
 
   log "${green}" "${message}"
 }
 
-function log_warn() {
+function log_warn {
   local -r message="${1}"
   local -r green='\033[0;32m'
   local -r yellow='\033[1;33m'
@@ -47,7 +47,7 @@ function log_warn() {
   log "${yellow}" "${message}"
 }
 
-function install_base_packages() {
+function install_base_packages {
   log_warn "Please provide your super user password so the process can install all the required packages ..."
 
   # We need to `declare` the functions or else they will not be available
@@ -168,7 +168,7 @@ function install_base_packages() {
     "
 }
 
-function install_python_packages() {
+function install_python_packages {
   log_info "Installing python packages..."
 
   pip3 install --user \
@@ -193,7 +193,7 @@ function install_python_packages() {
     youtube-dl
 }
 
-function simple_git_clone() {
+function git_clone_install {
   local -r name="${1}"
   local -r repository="${2}"
   local -r location="${3}"
@@ -203,7 +203,7 @@ function simple_git_clone() {
   ln -s "${location}"/bin/* "$LOCAL_BIN"
 }
 
-function simple_latest_github_release() {
+function github_compressed_install {
   local -r name="${1}"
   local -r user_repo="${2}"
   local -r match="${3}"
@@ -220,7 +220,7 @@ function simple_latest_github_release() {
   tar -xvf "$filename" -C "${LOCAL_BIN}/" "${name}"
 }
 
-function simple_latest_github_release_binary() {
+function github_binary_install {
   local -r name="${1}"
   local -r user_repo="${2}"
   local -r match="${3}"
@@ -238,7 +238,7 @@ function simple_latest_github_release_binary() {
   mv "$filename" "${LOCAL_BIN}/${name}"
 }
 
-function inner_path_latest_github_release() {
+function github_compressed_inner_path_install {
   local -r name="${1}"
   local -r user_repo="${2}"
   local -r match="${3}"
@@ -257,7 +257,7 @@ function inner_path_latest_github_release() {
   tar -xvf "$filename" --strip-components "${strip_components}" -C "${LOCAL_BIN}/" "${filename%.*.*}/${file_path}"
 }
 
-function install_kubectl() {
+function install_kubectl {
   log_info "Installing kubectl"
 
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
@@ -267,7 +267,7 @@ function install_kubectl() {
   mv ./kubectl "${LOCAL_BIN}/kubectl"
 }
 
-function install_golang() {
+function install_golang {
   local -r download_page="https://golang.org/dl/"
 
   local -r tmp_page=$(mktemp)
@@ -286,7 +286,7 @@ function install_golang() {
   # export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 }
 
-function install_terminal_tools() {
+function install_terminal_tools {
     log_info "Installing oh-my-zsh ..."
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
     chsh -s "$(command -v zsh)"
@@ -338,23 +338,23 @@ function install_terminal_tools() {
     log_info "Installing neovim plugins ..."
     nvim "+silent! PlugInstall!" +qall!
 
-    simple_git_clone tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
-    simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+    git_clone_install tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
+    git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
 
-    simple_latest_github_release kubens  ahmetb/kubectx linux_x86_64.tar.gz
-    simple_latest_github_release kubectx ahmetb/kubectx linux_x86_64.tar.gz
-    simple_latest_github_release k9s     derailed/k9s   Linux_x86_64.tar.gz
+    github_compressed_install kubens  ahmetb/kubectx linux_x86_64.tar.gz
+    github_compressed_install kubectx ahmetb/kubectx linux_x86_64.tar.gz
+    github_compressed_install k9s     derailed/k9s   Linux_x86_64.tar.gz
 
-    inner_path_latest_github_release delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
-    inner_path_latest_github_release gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
+    github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
+    github_compressed_inner_path_install gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
 
-    simple_latest_github_release_binary aws-vault 99designs/aws-vault linux-amd64
+    github_binary_install aws-vault 99designs/aws-vault linux-amd64
 
     install_kubectl
     install_golang
 }
 
-function main() {
+function main {
   SECONDS=0
   packages_before=$(dpkg --get-selections | wc -l)
 
