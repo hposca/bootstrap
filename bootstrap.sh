@@ -193,59 +193,6 @@ function install_python_packages() {
     youtube-dl
 }
 
-function install_terminal_tools() {
-    log_info "Installing oh-my-zsh ..."
-    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
-    chsh -s "$(command -v zsh)"
-
-    log_info "Installing zsh plugins..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
-    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-
-    log_info "Installing fzf ..."
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install --all
-
-    log_info "Installing plug ..."
-    curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-    # If we want to install the latest version of bat:
-    #
-    # log_info "Installing batcat ..."
-    # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
-    # _tmp_dir="$(mktemp -d)"
-    # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-    # | grep "tag_name" \
-    # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
-    # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
-
-    log_info "Configuring bat ..."
-    # https://github.com/sharkdp/bat#on-ubuntu-using-apt
-    mkdir -p ~/.local/bin
-    ln -s /usr/bin/batcat ~/.local/bin/bat
-
-    log_info "Installing dotfiles ..."
-    local -r dotfiles_dir=~/src/hposca/dotfiles/
-    if [[ ! -d "${dotfiles_dir}" ]]; then
-      mkdir -p "${dotfiles_dir}"
-      git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
-    else
-      pushd "${dotfiles_dir}" || exit
-      git pull
-      popd || exit
-    fi
-    log_info "Creating symbolic links"
-    ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
-    ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
-    mkdir -p ~/.config/nvim/
-    ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
-    ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
-    ln -sf "${dotfiles_dir}"/philips.zsh-theme ~/.oh-my-zsh/custom/philips.zsh-theme
-
-    log_info "Installing neovim plugins ..."
-    nvim "+silent! PlugInstall!" +qall!
-}
-
 function simple_git_clone() {
   local -r name="${1}"
   local -r repository="${2}"
@@ -321,19 +268,70 @@ function install_golang() {
   # export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 }
 
-function install_terminal_tools_plus() {
-  simple_git_clone tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
-  simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+function install_terminal_tools() {
+    log_info "Installing oh-my-zsh ..."
+    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+    chsh -s "$(command -v zsh)"
 
-  simple_latest_github_release kubens  ahmetb/kubectx linux_x86_64.tar.gz
-  simple_latest_github_release kubectx ahmetb/kubectx linux_x86_64.tar.gz
-  simple_latest_github_release k9s     derailed/k9s   Linux_x86_64.tar.gz
+    log_info "Installing zsh plugins..."
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
+    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-  inner_path_latest_github_release delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
-  inner_path_latest_github_release gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
+    log_info "Installing fzf ..."
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install --all
 
-  install_kubectl
-  install_golang
+    log_info "Installing plug ..."
+    curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+    # If we want to install the latest version of bat:
+    #
+    # log_info "Installing batcat ..."
+    # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
+    # _tmp_dir="$(mktemp -d)"
+    # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+    # | grep "tag_name" \
+    # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
+    # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
+
+    log_info "Configuring bat ..."
+    # https://github.com/sharkdp/bat#on-ubuntu-using-apt
+    mkdir -p ~/.local/bin
+    ln -s /usr/bin/batcat ~/.local/bin/bat
+
+    log_info "Installing dotfiles ..."
+    local -r dotfiles_dir=~/src/hposca/dotfiles/
+    if [[ ! -d "${dotfiles_dir}" ]]; then
+      mkdir -p "${dotfiles_dir}"
+      git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
+    else
+      pushd "${dotfiles_dir}" || exit
+      git pull
+      popd || exit
+    fi
+    log_info "Creating symbolic links"
+    ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
+    ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
+    mkdir -p ~/.config/nvim/
+    ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
+    ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
+    ln -sf "${dotfiles_dir}"/philips.zsh-theme ~/.oh-my-zsh/custom/philips.zsh-theme
+
+    log_info "Installing neovim plugins ..."
+    nvim "+silent! PlugInstall!" +qall!
+
+    simple_git_clone tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
+    simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+
+    simple_latest_github_release kubens  ahmetb/kubectx linux_x86_64.tar.gz
+    simple_latest_github_release kubectx ahmetb/kubectx linux_x86_64.tar.gz
+    simple_latest_github_release k9s     derailed/k9s   Linux_x86_64.tar.gz
+
+    inner_path_latest_github_release delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
+    inner_path_latest_github_release gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
+
+    install_kubectl
+    install_golang
 }
 
 function main() {
@@ -345,7 +343,6 @@ function main() {
   install_base_packages
   install_python_packages
   install_terminal_tools
-  install_terminal_tools_plus
 
   packages_after=$(dpkg --get-selections | wc -l)
   local -r duration=${SECONDS}
