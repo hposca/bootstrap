@@ -21,6 +21,7 @@
 # WHITE='\033[1;37m'
 
 UBUNTU_RELEASE=focal
+LOCAL_BIN="${HOME}/.local/bin"
 
 function log() {
   local -r color="${1}"
@@ -88,6 +89,7 @@ function install_base_packages() {
       gnucash \
       gnupg \
       kazam \
+      pass \
       qbittorrent \
       vlc \
       \
@@ -181,6 +183,7 @@ function install_python_packages() {
     mkdocs \
     neovim \
     powerline-status \
+    pre-commit \
     psutil \
     pyftpdlib \
     pyopenssl \
@@ -188,6 +191,81 @@ function install_python_packages() {
     rich \
     tldr \
     youtube-dl
+}
+
+function simple_git_clone() {
+  local -r name="${1}"
+  local -r repository="${2}"
+  local -r location="${3}"
+
+  log_info "Installing ${name}"
+  git clone "${repository}" "${location}"
+  ln -s "${location}"/bin/* "$LOCAL_BIN"
+}
+
+function simple_latest_github_release() {
+  local -r name="${1}"
+  local -r user_repo="${2}"
+  local -r match="${3}"
+
+  log_info "Installing ${name}"
+
+  local -r tmp_page=$(mktemp)
+  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+
+  wget "$url"
+  tar -xvf "$filename" -C "${LOCAL_BIN}/" "${name}"
+}
+
+function inner_path_latest_github_release() {
+  local -r name="${1}"
+  local -r user_repo="${2}"
+  local -r match="${3}"
+  local -r strip_components="${4}"
+  local -r file_path="${5}"
+
+  log_info "Installing ${name}"
+
+  local -r tmp_page=$(mktemp)
+  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+
+  wget "$url"
+  tar -xvf "$filename" --strip-components "${strip_components}" -C "${LOCAL_BIN}/" "${filename%.*.*}/${file_path}"
+}
+
+function install_kubectl() {
+  log_info "Installing kubectl"
+
+  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+  echo "$(<kubectl.sha256) kubectl" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  chmod +x ./kubectl
+  mv ./kubectl "${LOCAL_BIN}/kubectl"
+}
+
+function install_golang() {
+  local -r download_page="https://golang.org/dl/"
+
+  local -r tmp_page=$(mktemp)
+  curl -s "$download_page" -o "$tmp_page"
+
+  local -r latest_version=$(grep linux-amd64 "$tmp_page" | grep 'download downloadBox' | cut -d'"' -f4 | cut -d'/' -f3)
+  local -r sha=$(grep -A10 "$latest_version" "$tmp_page" | grep "<td><tt>" | sed 's/<[^>]*>//g' | tr -d ' ')
+
+  wget "$download_page$latest_version"
+  echo "${sha} ${latest_version}" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  sudo tar -C /usr/local -xzf "$latest_version"
+
+  # Do not forget to add these environment variables into your ~/.bashrc ~/.zshrc ~/.fishrc file
+  # export GOROOT=/usr/local/go
+  # export GOPATH=$HOME/src/go
+  # export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 }
 
 function install_terminal_tools() {
@@ -227,9 +305,9 @@ function install_terminal_tools() {
       mkdir -p "${dotfiles_dir}"
       git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
     else
-      pushd "${dotfiles_dir}"
+      pushd "${dotfiles_dir}" || exit
       git pull
-      popd
+      popd || exit
     fi
     log_info "Creating symbolic links"
     ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
@@ -241,6 +319,19 @@ function install_terminal_tools() {
 
     log_info "Installing neovim plugins ..."
     nvim "+silent! PlugInstall!" +qall!
+
+    simple_git_clone tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
+    simple_git_clone tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+
+    simple_latest_github_release kubens  ahmetb/kubectx linux_x86_64.tar.gz
+    simple_latest_github_release kubectx ahmetb/kubectx linux_x86_64.tar.gz
+    simple_latest_github_release k9s     derailed/k9s   Linux_x86_64.tar.gz
+
+    inner_path_latest_github_release delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
+    inner_path_latest_github_release gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
+
+    install_kubectl
+    install_golang
 }
 
 function main() {
@@ -258,7 +349,7 @@ function main() {
 
   log_info "Total number of packages before process: ${packages_before}"
   log_info "Total number of packages after process : ${packages_after}"
-  log_info "The entire installation process took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+  log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
 
   log_warn "NOTE: It's recommended that you reboot your computer now."
 }

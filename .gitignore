@@ -1,2 +1,4 @@
 .vagrant
 .retry
+*.tar.gz
+*.sha*
