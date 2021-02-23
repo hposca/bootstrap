@@ -337,6 +337,8 @@ function install_terminal_tools {
 
     log_info "Installing neovim plugins ..."
     nvim "+silent! PlugInstall!" +qall!
+    nvim "+silent! GoInstallBinaries!" +qall!
+    # nvim "+silent! GoUpdateBinaries!" +qall!
 
     git_clone_install tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
     git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
