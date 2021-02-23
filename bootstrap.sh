@@ -347,6 +347,7 @@ function install_terminal_tools {
 
     github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
     github_compressed_inner_path_install gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
+    github_compressed_inner_path_install wtf   wtfutil/wtf      linux_amd64.tar.gz              1 wtfutil
 
     github_binary_install aws-vault 99designs/aws-vault linux-amd64
 
