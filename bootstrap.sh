@@ -106,6 +106,7 @@ function install_base_packages {
       guake \
       jq \
       neovim \
+      screenfetch \
       scrot \
       silversearcher-ag \
       tmux \
