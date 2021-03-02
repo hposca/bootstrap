@@ -336,6 +336,12 @@ function install_terminal_tools {
     ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
     ln -sf "${dotfiles_dir}"/philips.zsh-theme ~/.oh-my-zsh/custom/philips.zsh-theme
 
+    # Gotta validate if this actually works at the first time the script is being executed
+    git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
+    ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+    # This needs to be set on ~/.zshrc
+    # ZSH_THEME="spaceship"
+
     log_info "Installing neovim plugins ..."
     nvim "+silent! PlugInstall!" +qall!
     nvim "+silent! GoInstallBinaries!" +qall!
