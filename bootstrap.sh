@@ -122,6 +122,8 @@ function install_base_packages {
       ncdu \
       \
       exuberant-ctags \
+      libx11-dev \
+      libxext-dev \
       python3 \
       python3-ipdb \
       python3-pip \
@@ -194,6 +196,8 @@ function install_python_packages {
     ueberzug \
     youtube-dl
 
+  ranger --copy-config=rc
+  echo "set preview_images true" >> ~/.config/ranger/rc.conf
   echo "set preview_images_method ueberzug" >> ~/.config/ranger/rc.conf
 }
 
