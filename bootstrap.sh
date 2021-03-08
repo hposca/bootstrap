@@ -365,6 +365,12 @@ function install_terminal_tools {
     install_nodejs
 }
 
+function install_node_packages {
+  sudo su -c "
+    npm install -g neovim
+  "
+}
+
 function main {
   SECONDS=0
   packages_before=$(dpkg --get-selections | wc -l)
@@ -374,6 +380,7 @@ function main {
   install_base_packages
   install_python_packages
   install_terminal_tools
+  install_node_packages
 
   packages_after=$(dpkg --get-selections | wc -l)
   local -r duration=${SECONDS}
