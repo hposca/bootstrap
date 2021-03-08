@@ -287,6 +287,12 @@ function install_golang {
   # export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 }
 
+function install_nodejs {
+  sudo su -c "
+    curl -sL https://install-node.now.sh/lts | /bin/bash -s -- --yes
+  "
+}
+
 function install_terminal_tools {
     log_info "Installing oh-my-zsh ..."
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
@@ -356,6 +362,7 @@ function install_terminal_tools {
 
     install_kubectl
     install_golang
+    install_nodejs
 }
 
 function main {
