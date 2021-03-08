@@ -191,7 +191,10 @@ function install_python_packages {
     ranger-fm \
     rich \
     tldr \
+    ueberzug \
     youtube-dl
+
+  echo "set preview_images_method ueberzug" >> ~/.config/ranger/rc.conf
 }
 
 function git_clone_install {
