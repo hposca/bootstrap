@@ -191,6 +191,7 @@ function install_python_packages {
     pre-commit \
     psutil \
     pyftpdlib \
+    pylint \
     pyopenssl \
     ranger-fm \
     rich \
