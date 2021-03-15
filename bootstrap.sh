@@ -127,6 +127,7 @@ function install_base_packages {
       python3 \
       python3-ipdb \
       python3-pip \
+      python3-venv \
       shellcheck \
       vagrant \
       yamllint \
