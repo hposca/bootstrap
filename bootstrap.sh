@@ -183,6 +183,7 @@ function install_python_packages {
     docker-compose \
     ipython \
     jedi \
+    jedi-language-server \
     mkdocs \
     neovim \
     powerline-status \
