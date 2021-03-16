@@ -289,6 +289,7 @@ function install_golang {
 
   wget "$download_page$latest_version"
   echo "${sha} ${latest_version}" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  sudo rm -rf /usr/local/go/
   sudo tar -C /usr/local -xzf "$latest_version"
 
   # Do not forget to add these environment variables into your ~/.bashrc ~/.zshrc ~/.fishrc file
