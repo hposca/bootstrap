@@ -231,6 +231,23 @@ function github_compressed_install {
   tar -xvf "$filename" -C "${LOCAL_BIN}/" "${name}"
 }
 
+function github_compressed_install_zip {
+  local -r name="${1}"
+  local -r user_repo="${2}"
+  local -r match="${3}"
+
+  log_info "Installing ${name}"
+
+  local -r tmp_page=$(mktemp)
+  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+
+  wget "$url"
+  unzip -j "${filename}" "${name}" -d "${LOCAL_BIN}"
+}
+
 function github_binary_install {
   local -r name="${1}"
   local -r user_repo="${2}"
@@ -367,10 +384,11 @@ function install_terminal_tools {
     git_clone_install tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
     git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
 
-    github_compressed_install kubens        ahmetb/kubectx             linux_x86_64.tar.gz
-    github_compressed_install kubectx       ahmetb/kubectx             linux_x86_64.tar.gz
-    github_compressed_install k9s           derailed/k9s               Linux_x86_64.tar.gz
-    github_compressed_install terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
+    github_compressed_install     kubens        ahmetb/kubectx             linux_x86_64.tar.gz
+    github_compressed_install     kubectx       ahmetb/kubectx             linux_x86_64.tar.gz
+    github_compressed_install     k9s           derailed/k9s               Linux_x86_64.tar.gz
+    github_compressed_install     terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
+    github_compressed_install_zip tflint        terraform-linters/tflint   linux_amd64.zip
 
     github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
     github_compressed_inner_path_install gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
