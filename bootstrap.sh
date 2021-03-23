@@ -367,9 +367,10 @@ function install_terminal_tools {
     git_clone_install tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
     git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
 
-    github_compressed_install kubens  ahmetb/kubectx linux_x86_64.tar.gz
-    github_compressed_install kubectx ahmetb/kubectx linux_x86_64.tar.gz
-    github_compressed_install k9s     derailed/k9s   Linux_x86_64.tar.gz
+    github_compressed_install kubens        ahmetb/kubectx             linux_x86_64.tar.gz
+    github_compressed_install kubectx       ahmetb/kubectx             linux_x86_64.tar.gz
+    github_compressed_install k9s           derailed/k9s               Linux_x86_64.tar.gz
+    github_compressed_install terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
 
     github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
     github_compressed_inner_path_install gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
