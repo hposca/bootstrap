@@ -20,6 +20,8 @@
 # LIGHTCYAN='\033[1;36m'
 # WHITE='\033[1;37m'
 
+# TODO: Install awscli v2 -> https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
+
 UBUNTU_RELEASE=focal
 LOCAL_BIN="${HOME}/.local/bin"
 
@@ -176,7 +178,6 @@ function install_python_packages {
   log_info "Installing python packages..."
 
   pip3 install --user \
-    awscli \
     black \
     boto3 \
     bpytop \
