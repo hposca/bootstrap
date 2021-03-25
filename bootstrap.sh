@@ -322,6 +322,14 @@ function install_nodejs {
   "
 }
 
+function install_tmuxinator {
+  sudo su -c "
+    gem install tmuxinator
+  "
+  mkdir -p ~/.oh-my-zsh/completions/
+  wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O ~/.oh-my-zsh/completions/_tmuxinator
+}
+
 function install_terminal_tools {
     log_info "Installing oh-my-zsh ..."
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
@@ -369,7 +377,6 @@ function install_terminal_tools {
     mkdir -p ~/.config/nvim/
     ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
     ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
-    ln -sf "${dotfiles_dir}"/philips.zsh-theme ~/.oh-my-zsh/custom/philips.zsh-theme
 
     # Gotta validate if this actually works at the first time the script is being executed
     git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
@@ -400,6 +407,7 @@ function install_terminal_tools {
     install_kubectl
     install_golang
     install_nodejs
+    install_tmuxinator
 }
 
 function install_node_packages {
