@@ -106,6 +106,7 @@ function install_base_packages {
       fonts-powerline \
       graphviz \
       guake \
+      highlight \
       jq \
       neovim \
       screenfetch \
