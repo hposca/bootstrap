@@ -1,0 +1,5 @@
+[ ] Install packer automatically
+    https://www.packer.io/downloads
+[ ] Install highlight automatically
+[ ] Install awscli v2 automatically
+    https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
