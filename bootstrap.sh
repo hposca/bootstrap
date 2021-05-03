@@ -110,6 +110,7 @@ function install_base_packages {
       screenfetch \
       scrot \
       silversearcher-ag \
+      tmate \
       tmux \
       tree \
       xclip \
