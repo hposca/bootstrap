@@ -2,3 +2,4 @@
 .retry
 *.tar.gz
 *.sha*
+*.zip
