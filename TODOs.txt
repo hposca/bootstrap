@@ -1,3 +1,4 @@
+[ ] Install Tmux Plugin Manager (and the plugins) automatically
 [ ] Install packer automatically
     https://www.packer.io/downloads
 [ ] Install highlight automatically
