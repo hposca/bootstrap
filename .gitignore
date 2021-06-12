@@ -3,3 +3,5 @@
 *.tar.gz
 *.sha*
 *.zip
+.sources
+.downloads
