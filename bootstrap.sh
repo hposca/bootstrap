@@ -20,6 +20,8 @@
 # LIGHTCYAN='\033[1;36m'
 # WHITE='\033[1;37m'
 
+#TODO: Run `sudo apt autoremove` at the end of the process
+
 UBUNTU_RELEASE=focal
 LOCAL_BIN="${HOME}/.local/bin"
 

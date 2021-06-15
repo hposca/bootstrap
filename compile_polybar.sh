@@ -2,6 +2,10 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+#TODO: Merge this script into the main one
+#TODO: Install awesome-fonts
+#      - Download it to /usr/share/fonts/opentype/ and then `sudo fc-cache -f -v`
+
 # LOCAL_BIN="${HOME}/.local/bin"
 DOWNLOADS_DIR=".downloads"
 SOURCES_DIR=".sources"
