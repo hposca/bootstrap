@@ -110,6 +110,7 @@ function install_base_packages {
       screenfetch \
       scrot \
       silversearcher-ag \
+      taskwarrior \
       tmate \
       tmux \
       tree \
@@ -193,6 +194,7 @@ function install_python_packages {
     psutil \
     pyftpdlib \
     pylint \
+    pynvim \
     pyopenssl \
     ranger-fm \
     rich \
