@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# TODO: Install https://github.com/Mayccoll/Gogh.git and configure to use arthur
+# TODO: Install cheat.sh https://github.com/chubin/cheat.sh
+
 # ------
 # Colors
 # ------
