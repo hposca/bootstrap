@@ -421,6 +421,17 @@ function install_node_packages {
   "
 }
 
+function install_aws_cli_v2 {
+  # https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
+
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  sudo ./aws/install
+
+  # To update an already installed version:
+  # sudo ./aws/install --update
+}
+
 function main {
   SECONDS=0
   packages_before=$(dpkg --get-selections | wc -l)
@@ -431,6 +442,7 @@ function main {
   install_python_packages
   install_terminal_tools
   install_node_packages
+  install_aws_cli_v2
 
   packages_after=$(dpkg --get-selections | wc -l)
   local -r duration=${SECONDS}
