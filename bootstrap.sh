@@ -321,11 +321,11 @@ function install_golang {
   # export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 }
 
-function install_nodejs {
-  sudo su -c "
-    curl -sL https://install-node.now.sh/lts | /bin/bash -s -- --yes
-  "
-}
+# function install_nodejs {
+#   sudo su -c "
+#     curl -sL https://install-node.now.sh/lts | /bin/bash -s -- --yes
+#   "
+# }
 
 function install_tmuxinator {
   sudo su -c "
@@ -411,7 +411,7 @@ function install_terminal_tools {
 
     install_kubectl
     install_golang
-    install_nodejs
+    # install_nodejs
     install_tmuxinator
 }
 
@@ -431,6 +431,14 @@ function install_aws_cli_v2 {
   # To update an already installed version:
   # sudo ./aws/install --update
 }
+function install_yarn() {
+  # https://linuxize.com/post/how-to-install-yarn-on-ubuntu-20-04/
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  sudo apt update
+  sudo apt install yarn
+  # It will also install nodejs
+}
 
 function main {
   SECONDS=0
@@ -442,6 +450,7 @@ function main {
   install_python_packages
   install_terminal_tools
   install_node_packages
+  install_yarn
   install_aws_cli_v2
 
   packages_after=$(dpkg --get-selections | wc -l)
