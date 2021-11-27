@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
 # TODO: Install https://github.com/Mayccoll/Gogh.git and configure to use arthur
 # TODO: Install cheat.sh https://github.com/chubin/cheat.sh
@@ -58,6 +61,8 @@ function install_base_packages {
   sudo su -c "
     $(declare -f log)
     $(declare -f log_info)
+    export DEBIAN_FRONTEND=noninteractive
+    set -euo pipefail
 
     apt-get update
     log_info 'Upgrading all current packages to latest version ...'
@@ -68,26 +73,25 @@ function install_base_packages {
 
     log_info 'Adding docker keys ...'
     apt-key adv --fetch-keys https://download.docker.com/linux/ubuntu/gpg
-    add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu ${UBUNTU_RELEASE} stable'
+    add-apt-repository --yes 'deb [arch=amd64] https://download.docker.com/linux/ubuntu ${UBUNTU_RELEASE} stable'
 
     log_info 'Adding oracle keys ...'
     apt-key adv --fetch-keys http://www.virtualbox.org/download/oracle_vbox.asc
     apt-key adv --fetch-keys http://www.virtualbox.org/download/oracle_vbox_2016.asc
-    add-apt-repository 'deb http://download.virtualbox.org/virtualbox/debian ${UBUNTU_RELEASE} contrib'
+    add-apt-repository --yes 'deb http://download.virtualbox.org/virtualbox/debian ${UBUNTU_RELEASE} contrib'
 
     log_info 'Adding mozilla ppa ...'
     add-apt-repository --yes 'ppa:ubuntu-mozilla-daily/ppa'
 
     log_info 'Adding enpass keys ...'
     apt-key adv --fetch-keys https://apt.enpass.io/keys/enpass-linux.key
-    add-apt-repository 'deb https://apt.enpass.io/ stable main'
+    add-apt-repository --yes 'deb https://apt.enpass.io/ stable main'
 
     apt-get update
     log_info 'Installing packages ...'
     apt-get install -y \
       barrier \
       digikam \
-      dropbox \
       enpass \
       gnucash \
       gnupg \
@@ -97,9 +101,7 @@ function install_base_packages {
       vlc \
       \
       playonlinux \
-      steam \
       \
-      chromium \
       firefox \
       firefox-trunk \
       \
@@ -180,6 +182,7 @@ function install_base_packages {
 
 function install_python_packages {
   log_info "Installing python packages..."
+  export PATH=$HOME/.local/bin:$PATH
 
   pip3 install --user \
     black \
@@ -206,8 +209,8 @@ function install_python_packages {
     youtube-dl
 
   ranger --copy-config=rc
-  echo "set preview_images true" >> ~/.config/ranger/rc.conf
-  echo "set preview_images_method ueberzug" >> ~/.config/ranger/rc.conf
+  echo "set preview_images true" >>~/.config/ranger/rc.conf
+  echo "set preview_images_method ueberzug" >>~/.config/ranger/rc.conf
 }
 
 function git_clone_install {
@@ -296,13 +299,18 @@ function install_kubectl {
 
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
   curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-  echo "$(<kubectl.sha256) kubectl" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  echo "$(<kubectl.sha256) kubectl" | sha256sum --check || {
+    echo "SHA doesn't match, exiting"
+    exit 1
+  }
   chmod +x ./kubectl
   mv ./kubectl "${LOCAL_BIN}/kubectl"
 }
 
 function install_golang {
-  local -r download_page="https://golang.org/dl/"
+  log_info "Installing golang"
+
+  local -r download_page="https://go.dev/dl/"
 
   local -r tmp_page=$(mktemp)
   curl -s "$download_page" -o "$tmp_page"
@@ -311,7 +319,10 @@ function install_golang {
   local -r sha=$(grep -A10 "$latest_version" "$tmp_page" | grep "<td><tt>" | sed 's/<[^>]*>//g' | tr -d ' ')
 
   wget "$download_page$latest_version"
-  echo "${sha} ${latest_version}" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  echo "${sha} ${latest_version}" | sha256sum --check || {
+    echo "SHA doesn't match, exiting"
+    exit 1
+  }
   sudo rm -rf /usr/local/go/
   sudo tar -C /usr/local -xzf "$latest_version"
 
@@ -322,12 +333,16 @@ function install_golang {
 }
 
 # function install_nodejs {
+#   log_info "Installing NodeJS"
+#
 #   sudo su -c "
 #     curl -sL https://install-node.now.sh/lts | /bin/bash -s -- --yes
 #   "
 # }
 
 function install_tmuxinator {
+  log_info "Installing tmuxinator"
+
   sudo su -c "
     gem install tmuxinator
   "
@@ -336,92 +351,97 @@ function install_tmuxinator {
 }
 
 function install_terminal_tools {
-    log_info "Installing oh-my-zsh ..."
-    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
-    chsh -s "$(command -v zsh)"
+  log_info "Installing oh-my-zsh ..."
+  # curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  sudo chsh -s "$(command -v zsh)" "$(whoami)"
 
-    log_info "Installing zsh plugins..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
-    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  log_info "Installing zsh plugins..."
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
+  git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-    log_info "Installing fzf ..."
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install --all
+  log_info "Installing fzf ..."
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install --all
 
-    log_info "Installing plug ..."
-    curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  log_info "Installing plug ..."
+  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-    # If we want to install the latest version of bat:
-    #
-    # log_info "Installing batcat ..."
-    # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
-    # _tmp_dir="$(mktemp -d)"
-    # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-    # | grep "tag_name" \
-    # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
-    # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
+  # If we want to install the latest version of bat:
+  #
+  # log_info "Installing batcat ..."
+  # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
+  # _tmp_dir="$(mktemp -d)"
+  # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+  # | grep "tag_name" \
+  # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
+  # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
 
-    log_info "Configuring bat ..."
-    # https://github.com/sharkdp/bat#on-ubuntu-using-apt
-    mkdir -p ~/.local/bin
-    ln -s /usr/bin/batcat ~/.local/bin/bat
+  log_info "Configuring bat ..."
+  # https://github.com/sharkdp/bat#on-ubuntu-using-apt
+  mkdir -p ~/.local/bin
+  ln -s /usr/bin/batcat ~/.local/bin/bat
 
-    log_info "Installing dotfiles ..."
-    local -r dotfiles_dir=~/src/hposca/dotfiles/
-    if [[ ! -d "${dotfiles_dir}" ]]; then
-      mkdir -p "${dotfiles_dir}"
-      git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
-    else
-      pushd "${dotfiles_dir}" || exit
-      git pull
-      popd || exit
-    fi
-    log_info "Creating symbolic links"
-    ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
-    ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
-    mkdir -p ~/.config/nvim/
-    ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
-    ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
+  log_info "Installing dotfiles ..."
+  local -r dotfiles_dir=~/src/hposca/dotfiles/
+  if [[ ! -d "${dotfiles_dir}" ]]; then
+    mkdir -p "${dotfiles_dir}"
+    git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
+  else
+    pushd "${dotfiles_dir}" || exit
+    git pull
+    popd || exit
+  fi
+  log_info "Creating symbolic links"
+  ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
+  ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
+  mkdir -p ~/.config/nvim/
+  ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
+  ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
 
-    # Gotta validate if this actually works at the first time the script is being executed
-    git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
-    ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
-    # This needs to be set on ~/.zshrc
-    # ZSH_THEME="spaceship"
+  _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+  # Gotta validate if this actually works at the first time the script is being executed
+  git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
+  ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
+  # This needs to be set on ~/.zshrc
+  # ZSH_THEME="spaceship"
 
-    log_info "Installing neovim plugins ..."
-    nvim "+silent! PlugInstall!" +qall!
-    nvim "+silent! GoInstallBinaries!" +qall!
-    # nvim "+silent! GoUpdateBinaries!" +qall!
+  log_info "Installing neovim plugins ..."
+  nvim "+silent! PlugInstall!" +qall!
+  nvim "+silent! GoInstallBinaries!" +qall!
+  # nvim "+silent! GoUpdateBinaries!" +qall!
 
-    git_clone_install tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
-    git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+  git_clone_install tfenv https://github.com/tfutils/tfenv.git "${HOME}/.tfenv"
+  git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
 
-    github_compressed_install     kubens        ahmetb/kubectx             linux_x86_64.tar.gz
-    github_compressed_install     kubectx       ahmetb/kubectx             linux_x86_64.tar.gz
-    github_compressed_install     k9s           derailed/k9s               Linux_x86_64.tar.gz
-    github_compressed_install     terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
-    github_compressed_install_zip tflint        terraform-linters/tflint   linux_amd64.zip
+  github_compressed_install kubens ahmetb/kubectx linux_x86_64.tar.gz
+  github_compressed_install kubectx ahmetb/kubectx linux_x86_64.tar.gz
+  github_compressed_install k9s derailed/k9s Linux_x86_64.tar.gz
+  github_compressed_install terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
+  github_compressed_install_zip tflint terraform-linters/tflint linux_amd64.zip
 
-    github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
-    github_compressed_inner_path_install gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
-    github_compressed_inner_path_install wtf   wtfutil/wtf      linux_amd64.tar.gz              1 wtfutil
+  github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
+  github_compressed_inner_path_install gh cli/cli linux_amd64.tar.gz 2 bin/gh
+  github_compressed_inner_path_install wtf wtfutil/wtf linux_amd64.tar.gz 1 wtfutil
 
-    github_binary_install aws-vault 99designs/aws-vault linux-amd64
+  github_binary_install aws-vault 99designs/aws-vault linux-amd64
 
-    install_kubectl
-    install_golang
-    # install_nodejs
-    install_tmuxinator
+  install_kubectl
+  install_golang
+  # install_nodejs
+  install_tmuxinator
 }
 
 function install_node_packages {
+  log_info "Installing NodeJS Packages"
+
   sudo su -c "
     npm install -g neovim
   "
 }
 
 function install_aws_cli_v2 {
+  log_info "Installing AWS CLI v2"
   # https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
 
   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -432,11 +452,13 @@ function install_aws_cli_v2 {
   # sudo ./aws/install --update
 }
 function install_yarn() {
+  log_info "Installing yarn"
+
   # https://linuxize.com/post/how-to-install-yarn-on-ubuntu-20-04/
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   sudo apt update
-  sudo apt install yarn
+  sudo DEBIAN_FRONTEND=noninteractive apt install -y yarn npm
   # It will also install nodejs
 }
 
@@ -449,8 +471,8 @@ function main {
   install_base_packages
   install_python_packages
   install_terminal_tools
-  install_node_packages
   install_yarn
+  install_node_packages
   install_aws_cli_v2
 
   packages_after=$(dpkg --get-selections | wc -l)
