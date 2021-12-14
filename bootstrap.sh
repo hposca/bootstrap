@@ -416,9 +416,9 @@ function install_terminal_tools {
 }
 
 function install_node_packages {
-  sudo su -c "
-    npm install -g neovim
-  "
+  log_info "Installing NodeJS Packages"
+
+  npm install -g neovim
 }
 
 function install_aws_cli_v2 {
@@ -432,12 +432,33 @@ function install_aws_cli_v2 {
   # sudo ./aws/install --update
 }
 function install_yarn() {
+  log_info "Installing yarn"
+
+  # To re-install this step:
+  # - Completely remove node + npm + yarn with:
+  #   sudo apt-get purge -y npm --auto-remove && \
+  #   sudo apt-get purge -y node --auto-remove && \
+  #   sudo apt-get purge -y nodejs --auto-remove && \
+  #   sudo apt-get purge -y yarn --auto-remove && \
+  #   sudo rm -rf /usr/local/lib/node_modules && \
+  #   rm -rf ~/.config/yarn/
+  # - Guarantee that nothing else have them:
+  #   whereis npm node nodejs yarn
+  # Re-run this
+
   # https://linuxize.com/post/how-to-install-yarn-on-ubuntu-20-04/
   curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   sudo apt update
-  sudo apt install yarn
-  # It will also install nodejs
+  # Installs yarn and npm (will install nodejs as a dependency)
+  sudo DEBIAN_FRONTEND=noninteractive apt install -y yarn npm
+  # Upgrades to latest node version
+  npm install -g node
+  # Upgrades to latest npm
+  yarn global add npm
+
+  # At this point in time we'll have two distinct node binaries: nodejs and node:
+  #   node --version && nodejs --version && npm --version && yarn --version
 }
 
 function main {
