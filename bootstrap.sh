@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-#!/usr/bin/env bash
 set -euo pipefail
 IFS=$'\n\t'
 
 # TODO: Install https://github.com/Mayccoll/Gogh.git and configure to use arthur
 # TODO: Install cheat.sh https://github.com/chubin/cheat.sh
+# TODO: Install cargo, Rust's package manager
+# TODO: apt-get install -y fonts-font-awesome
 
 # ------
 # Colors
@@ -30,35 +31,35 @@ UBUNTU_RELEASE=focal
 LOCAL_BIN="${HOME}/.local/bin"
 
 function log {
-  local -r color="${1}"
-  local -r message="${2}"
-  local -r timestamp=$(date +"%Y-%m-%d %H:%M:%S")
-  local -r nocolor='\033[0m'
+	local -r color="${1}"
+	local -r message="${2}"
+	local -r timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+	local -r nocolor='\033[0m'
 
-  echo -e "\n[${timestamp}] ${color}${message}${nocolor}\n"
+	echo -e "\n[${timestamp}] ${color}${message}${nocolor}\n"
 }
 
 function log_info {
-  local -r message="${1}"
-  local -r green='\033[0;32m'
+	local -r message="${1}"
+	local -r green='\033[0;32m'
 
-  log "${green}" "${message}"
+	log "${green}" "${message}"
 }
 
 function log_warn {
-  local -r message="${1}"
-  local -r green='\033[0;32m'
-  local -r yellow='\033[1;33m'
+	local -r message="${1}"
+	local -r green='\033[0;32m'
+	local -r yellow='\033[1;33m'
 
-  log "${yellow}" "${message}"
+	log "${yellow}" "${message}"
 }
 
 function install_base_packages {
-  log_warn "Please provide your super user password so the process can install all the required packages ..."
+	log_warn "Please provide your super user password so the process can install all the required packages ..."
 
-  # We need to `declare` the functions or else they will not be available
-  # inside sudo's subshell
-  sudo su -c "
+	# We need to `declare` the functions or else they will not be available
+	# inside sudo's subshell
+	sudo su -c "
     $(declare -f log)
     $(declare -f log_info)
     export DEBIAN_FRONTEND=noninteractive
@@ -181,155 +182,155 @@ function install_base_packages {
 }
 
 function install_python_packages {
-  log_info "Installing python packages..."
-  export PATH=$HOME/.local/bin:$PATH
+	log_info "Installing python packages..."
+	export PATH=$HOME/.local/bin:$PATH
 
-  pip3 install --user \
-    black \
-    boto3 \
-    bpytop \
-    diagrams \
-    docker-compose \
-    ipython \
-    jedi \
-    jedi-language-server \
-    mkdocs \
-    neovim \
-    powerline-status \
-    pre-commit \
-    psutil \
-    pyftpdlib \
-    pylint \
-    pynvim \
-    pyopenssl \
-    ranger-fm \
-    rich \
-    tldr \
-    ueberzug \
-    youtube-dl
+	pip3 install --user \
+		black \
+		boto3 \
+		bpytop \
+		diagrams \
+		docker-compose \
+		ipython \
+		jedi \
+		jedi-language-server \
+		mkdocs \
+		neovim \
+		powerline-status \
+		pre-commit \
+		psutil \
+		pyftpdlib \
+		pylint \
+		pynvim \
+		pyopenssl \
+		ranger-fm \
+		rich \
+		tldr \
+		ueberzug \
+		youtube-dl
 
-  ranger --copy-config=rc
-  echo "set preview_images true" >>~/.config/ranger/rc.conf
-  echo "set preview_images_method ueberzug" >>~/.config/ranger/rc.conf
+	ranger --copy-config=rc
+	echo "set preview_images true" >>~/.config/ranger/rc.conf
+	echo "set preview_images_method ueberzug" >>~/.config/ranger/rc.conf
 }
 
 function git_clone_install {
-  local -r name="${1}"
-  local -r repository="${2}"
-  local -r location="${3}"
+	local -r name="${1}"
+	local -r repository="${2}"
+	local -r location="${3}"
 
-  log_info "Installing ${name}"
-  git clone "${repository}" "${location}"
-  ln -s "${location}"/bin/* "$LOCAL_BIN"
+	log_info "Installing ${name}"
+	git clone "${repository}" "${location}"
+	ln -s "${location}"/bin/* "$LOCAL_BIN"
 }
 
 function github_compressed_install {
-  local -r name="${1}"
-  local -r user_repo="${2}"
-  local -r match="${3}"
+	local -r name="${1}"
+	local -r user_repo="${2}"
+	local -r match="${3}"
 
-  log_info "Installing ${name}"
+	log_info "Installing ${name}"
 
-  local -r tmp_page=$(mktemp)
-  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
-  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
-  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
-  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+	local -r tmp_page=$(mktemp)
+	curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+	local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+	local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+	local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
 
-  wget "$url"
-  tar -xvf "$filename" -C "${LOCAL_BIN}/" "${name}"
+	wget "$url"
+	tar -xvf "$filename" -C "${LOCAL_BIN}/" "${name}"
 }
 
 function github_compressed_install_zip {
-  local -r name="${1}"
-  local -r user_repo="${2}"
-  local -r match="${3}"
+	local -r name="${1}"
+	local -r user_repo="${2}"
+	local -r match="${3}"
 
-  log_info "Installing ${name}"
+	log_info "Installing ${name}"
 
-  local -r tmp_page=$(mktemp)
-  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
-  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
-  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
-  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+	local -r tmp_page=$(mktemp)
+	curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+	local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+	local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+	local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
 
-  wget "$url"
-  unzip -j "${filename}" "${name}" -d "${LOCAL_BIN}"
+	wget "$url"
+	unzip -j "${filename}" "${name}" -d "${LOCAL_BIN}"
 }
 
 function github_binary_install {
-  local -r name="${1}"
-  local -r user_repo="${2}"
-  local -r match="${3}"
+	local -r name="${1}"
+	local -r user_repo="${2}"
+	local -r match="${3}"
 
-  log_info "Installing ${name}"
+	log_info "Installing ${name}"
 
-  local -r tmp_page=$(mktemp)
-  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
-  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
-  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
-  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+	local -r tmp_page=$(mktemp)
+	curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+	local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+	local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+	local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
 
-  wget "$url"
-  chmod +x "$filename"
-  mv "$filename" "${LOCAL_BIN}/${name}"
+	wget "$url"
+	chmod +x "$filename"
+	mv "$filename" "${LOCAL_BIN}/${name}"
 }
 
 function github_compressed_inner_path_install {
-  local -r name="${1}"
-  local -r user_repo="${2}"
-  local -r match="${3}"
-  local -r strip_components="${4}"
-  local -r file_path="${5}"
+	local -r name="${1}"
+	local -r user_repo="${2}"
+	local -r match="${3}"
+	local -r strip_components="${4}"
+	local -r file_path="${5}"
 
-  log_info "Installing ${name}"
+	log_info "Installing ${name}"
 
-  local -r tmp_page=$(mktemp)
-  curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
-  local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
-  local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
-  local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
+	local -r tmp_page=$(mktemp)
+	curl -s "https://api.github.com/repos/${user_repo}/releases/latest" -o "$tmp_page"
+	local -r addresses=$(jq -r ".assets[] | select(.name | endswith(\"$match\")) | {url: .browser_download_url, name: .name}" "$tmp_page")
+	local -r filename=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .name")
+	local -r url=$(echo "$addresses" | jq -r "select(.name | contains(\"$name\")) | .url")
 
-  wget "$url"
-  tar -xvf "$filename" --strip-components "${strip_components}" -C "${LOCAL_BIN}/" "${filename%.*.*}/${file_path}"
+	wget "$url"
+	tar -xvf "$filename" --strip-components "${strip_components}" -C "${LOCAL_BIN}/" "${filename%.*.*}/${file_path}"
 }
 
 function install_kubectl {
-  log_info "Installing kubectl"
+	log_info "Installing kubectl"
 
-  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-  curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-  echo "$(<kubectl.sha256) kubectl" | sha256sum --check || {
-    echo "SHA doesn't match, exiting"
-    exit 1
-  }
-  chmod +x ./kubectl
-  mv ./kubectl "${LOCAL_BIN}/kubectl"
+	curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+	curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+	echo "$(<kubectl.sha256) kubectl" | sha256sum --check || {
+		echo "SHA doesn't match, exiting"
+		exit 1
+	}
+	chmod +x ./kubectl
+	mv ./kubectl "${LOCAL_BIN}/kubectl"
 }
 
 function install_golang {
-  log_info "Installing golang"
+	log_info "Installing golang"
 
-  local -r download_page="https://go.dev/dl/"
+	local -r download_page="https://go.dev/dl/"
 
-  local -r tmp_page=$(mktemp)
-  curl -s "$download_page" -o "$tmp_page"
+	local -r tmp_page=$(mktemp)
+	curl -s "$download_page" -o "$tmp_page"
 
-  local -r latest_version=$(grep linux-amd64 "$tmp_page" | grep 'download downloadBox' | cut -d'"' -f4 | cut -d'/' -f3)
-  local -r sha=$(grep -A10 "$latest_version" "$tmp_page" | grep "<td><tt>" | sed 's/<[^>]*>//g' | tr -d ' ')
+	local -r latest_version=$(grep linux-amd64 "$tmp_page" | grep 'download downloadBox' | cut -d'"' -f4 | cut -d'/' -f3)
+	local -r sha=$(grep -A10 "$latest_version" "$tmp_page" | grep "<td><tt>" | sed 's/<[^>]*>//g' | tr -d ' ')
 
-  wget "$download_page$latest_version"
-  echo "${sha} ${latest_version}" | sha256sum --check || {
-    echo "SHA doesn't match, exiting"
-    exit 1
-  }
-  sudo rm -rf /usr/local/go/
-  sudo tar -C /usr/local -xzf "$latest_version"
+	wget "$download_page$latest_version"
+	echo "${sha} ${latest_version}" | sha256sum --check || {
+		echo "SHA doesn't match, exiting"
+		exit 1
+	}
+	sudo rm -rf /usr/local/go/
+	sudo tar -C /usr/local -xzf "$latest_version"
 
-  # Do not forget to add these environment variables into your ~/.bashrc ~/.zshrc ~/.fishrc file
-  # export GOROOT=/usr/local/go
-  # export GOPATH=$HOME/src/go
-  # export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+	# Do not forget to add these environment variables into your ~/.bashrc ~/.zshrc ~/.fishrc file
+	# export GOROOT=/usr/local/go
+	# export GOPATH=$HOME/src/go
+	# export PATH=$PATH:$GOPATH/bin:$GOROOT/bin
 }
 
 # function install_nodejs {
@@ -341,148 +342,148 @@ function install_golang {
 # }
 
 function install_tmuxinator {
-  log_info "Installing tmuxinator"
+	log_info "Installing tmuxinator"
 
-  sudo su -c "
+	sudo su -c "
     gem install tmuxinator
   "
-  mkdir -p ~/.oh-my-zsh/completions/
-  wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O ~/.oh-my-zsh/completions/_tmuxinator
+	mkdir -p ~/.oh-my-zsh/completions/
+	wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.zsh -O ~/.oh-my-zsh/completions/_tmuxinator
 }
 
 function install_terminal_tools {
-  log_info "Installing oh-my-zsh ..."
-  # curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-  sudo chsh -s "$(command -v zsh)" "$(whoami)"
+	log_info "Installing oh-my-zsh ..."
+	# curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+	sudo chsh -s "$(command -v zsh)" "$(whoami)"
 
-  log_info "Installing zsh plugins..."
-  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
-  git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+	log_info "Installing zsh plugins..."
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
+	git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-  log_info "Installing fzf ..."
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  ~/.fzf/install --all
+	log_info "Installing fzf ..."
+	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+	~/.fzf/install --all
 
-  log_info "Installing plug ..."
-  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	log_info "Installing plug ..."
+	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-  # If we want to install the latest version of bat:
-  #
-  # log_info "Installing batcat ..."
-  # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
-  # _tmp_dir="$(mktemp -d)"
-  # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-  # | grep "tag_name" \
-  # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
-  # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
+	# If we want to install the latest version of bat:
+	#
+	# log_info "Installing batcat ..."
+	# # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
+	# _tmp_dir="$(mktemp -d)"
+	# LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+	# | grep "tag_name" \
+	# | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
+	# ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
 
-  log_info "Configuring bat ..."
-  # https://github.com/sharkdp/bat#on-ubuntu-using-apt
-  mkdir -p ~/.local/bin
-  ln -s /usr/bin/batcat ~/.local/bin/bat
+	log_info "Configuring bat ..."
+	# https://github.com/sharkdp/bat#on-ubuntu-using-apt
+	mkdir -p ~/.local/bin
+	ln -s /usr/bin/batcat ~/.local/bin/bat
 
-  log_info "Installing dotfiles ..."
-  local -r dotfiles_dir=~/src/hposca/dotfiles/
-  if [[ ! -d "${dotfiles_dir}" ]]; then
-    mkdir -p "${dotfiles_dir}"
-    git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
-  else
-    pushd "${dotfiles_dir}" || exit
-    git pull
-    popd || exit
-  fi
-  log_info "Creating symbolic links"
-  ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
-  ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
-  mkdir -p ~/.config/nvim/
-  ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
-  ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
+	log_info "Installing dotfiles ..."
+	local -r dotfiles_dir=~/src/hposca/dotfiles/
+	if [[ ! -d "${dotfiles_dir}" ]]; then
+		mkdir -p "${dotfiles_dir}"
+		git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
+	else
+		pushd "${dotfiles_dir}" || exit
+		git pull
+		popd || exit
+	fi
+	log_info "Creating symbolic links"
+	ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
+	ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
+	mkdir -p ~/.config/nvim/
+	ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
+	ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
 
-  _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-  # Gotta validate if this actually works at the first time the script is being executed
-  git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
-  ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
-  # This needs to be set on ~/.zshrc
-  # ZSH_THEME="spaceship"
+	_zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+	# Gotta validate if this actually works at the first time the script is being executed
+	git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
+	ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
+	# This needs to be set on ~/.zshrc
+	# ZSH_THEME="spaceship"
 
-  log_info "Installing neovim plugins ..."
-  nvim "+silent! PlugInstall!" +qall!
-  nvim "+silent! GoInstallBinaries!" +qall!
-  # nvim "+silent! GoUpdateBinaries!" +qall!
+	log_info "Installing neovim plugins ..."
+	nvim "+silent! PlugInstall!" +qall!
+	nvim "+silent! GoInstallBinaries!" +qall!
+	# nvim "+silent! GoUpdateBinaries!" +qall!
 
-  git_clone_install tfenv https://github.com/tfutils/tfenv.git "${HOME}/.tfenv"
-  git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+	git_clone_install tfenv https://github.com/tfutils/tfenv.git "${HOME}/.tfenv"
+	git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
 
-  github_compressed_install kubens ahmetb/kubectx linux_x86_64.tar.gz
-  github_compressed_install kubectx ahmetb/kubectx linux_x86_64.tar.gz
-  github_compressed_install k9s derailed/k9s Linux_x86_64.tar.gz
-  github_compressed_install terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
-  github_compressed_install_zip tflint terraform-linters/tflint linux_amd64.zip
+	github_compressed_install kubens ahmetb/kubectx linux_x86_64.tar.gz
+	github_compressed_install kubectx ahmetb/kubectx linux_x86_64.tar.gz
+	github_compressed_install k9s derailed/k9s Linux_x86_64.tar.gz
+	github_compressed_install terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
+	github_compressed_install_zip tflint terraform-linters/tflint linux_amd64.zip
 
-  github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
-  github_compressed_inner_path_install gh cli/cli linux_amd64.tar.gz 2 bin/gh
-  github_compressed_inner_path_install wtf wtfutil/wtf linux_amd64.tar.gz 1 wtfutil
+	github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
+	github_compressed_inner_path_install gh cli/cli linux_amd64.tar.gz 2 bin/gh
+	github_compressed_inner_path_install wtf wtfutil/wtf linux_amd64.tar.gz 1 wtfutil
 
-  github_binary_install aws-vault 99designs/aws-vault linux-amd64
+	github_binary_install aws-vault 99designs/aws-vault linux-amd64
 
-  install_kubectl
-  install_golang
-  # install_nodejs
-  install_tmuxinator
+	install_kubectl
+	install_golang
+	# install_nodejs
+	install_tmuxinator
 }
 
 function install_node_packages {
-  log_info "Installing NodeJS Packages"
+	log_info "Installing NodeJS Packages"
 
-  sudo su -c "
+	sudo su -c "
     npm install -g neovim
   "
 }
 
 function install_aws_cli_v2 {
-  log_info "Installing AWS CLI v2"
-  # https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
+	log_info "Installing AWS CLI v2"
+	# https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
 
-  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-  unzip awscliv2.zip
-  sudo ./aws/install
+	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+	unzip awscliv2.zip
+	sudo ./aws/install
 
-  # To update an already installed version:
-  # sudo ./aws/install --update
+	# To update an already installed version:
+	# sudo ./aws/install --update
 }
 function install_yarn() {
-  log_info "Installing yarn"
+	log_info "Installing yarn"
 
-  # https://linuxize.com/post/how-to-install-yarn-on-ubuntu-20-04/
-  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  sudo apt update
-  sudo DEBIAN_FRONTEND=noninteractive apt install -y yarn npm
-  # It will also install nodejs
+	# https://linuxize.com/post/how-to-install-yarn-on-ubuntu-20-04/
+	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+	echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+	sudo apt update
+	sudo DEBIAN_FRONTEND=noninteractive apt install -y yarn npm
+	# It will also install nodejs
 }
 
 function main {
-  SECONDS=0
-  packages_before=$(dpkg --get-selections | wc -l)
+	SECONDS=0
+	packages_before=$(dpkg --get-selections | wc -l)
 
-  log_info 'Beginning installation process ...'
+	log_info 'Beginning installation process ...'
 
-  install_base_packages
-  install_python_packages
-  install_terminal_tools
-  install_yarn
-  install_node_packages
-  install_aws_cli_v2
+	install_base_packages
+	install_python_packages
+	install_terminal_tools
+	install_yarn
+	install_node_packages
+	install_aws_cli_v2
 
-  packages_after=$(dpkg --get-selections | wc -l)
-  local -r duration=${SECONDS}
+	packages_after=$(dpkg --get-selections | wc -l)
+	local -r duration=${SECONDS}
 
-  log_info "Total number of packages before process: ${packages_before}"
-  log_info "Total number of packages after process : ${packages_after}"
-  log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
+	log_info "Total number of packages before process: ${packages_before}"
+	log_info "Total number of packages after process : ${packages_after}"
+	log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
 
-  log_warn "NOTE: It's recommended that you reboot your computer now."
+	log_warn "NOTE: It's recommended that you reboot your computer now."
 }
 
 main "${@}"
