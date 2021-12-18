@@ -180,6 +180,7 @@ function install_base_packages {
 
 function install_python_packages {
   log_info "Installing python packages..."
+  export PATH=$HOME/.local/bin:$PATH
 
   pip3 install --user \
     black \
@@ -302,7 +303,9 @@ function install_kubectl {
 }
 
 function install_golang {
-  local -r download_page="https://golang.org/dl/"
+  log_info "Installing golang"
+
+  local -r download_page="https://go.dev/dl/"
 
   local -r tmp_page=$(mktemp)
   curl -s "$download_page" -o "$tmp_page"
@@ -328,6 +331,8 @@ function install_golang {
 # }
 
 function install_tmuxinator {
+  log_info "Installing tmuxinator"
+
   sudo su -c "
     gem install tmuxinator
   "
@@ -383,9 +388,10 @@ function install_terminal_tools {
     ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
     ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
 
+    _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
     # Gotta validate if this actually works at the first time the script is being executed
-    git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
-    ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+    git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
+    ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
     # This needs to be set on ~/.zshrc
     # ZSH_THEME="spaceship"
 
@@ -422,6 +428,7 @@ function install_node_packages {
 }
 
 function install_aws_cli_v2 {
+  log_info "Installing AWS CLI v2"
   # https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
 
   curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
