@@ -209,8 +209,8 @@ function install_python_packages {
     youtube-dl
 
   ranger --copy-config=rc
-  echo "set preview_images true" >> ~/.config/ranger/rc.conf
-  echo "set preview_images_method ueberzug" >> ~/.config/ranger/rc.conf
+  echo "set preview_images true" >>~/.config/ranger/rc.conf
+  echo "set preview_images_method ueberzug" >>~/.config/ranger/rc.conf
 }
 
 function git_clone_install {
@@ -299,7 +299,10 @@ function install_kubectl {
 
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
   curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-  echo "$(<kubectl.sha256) kubectl" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  echo "$(<kubectl.sha256) kubectl" | sha256sum --check || {
+    echo "SHA doesn't match, exiting"
+    exit 1
+  }
   chmod +x ./kubectl
   mv ./kubectl "${LOCAL_BIN}/kubectl"
 }
@@ -316,7 +319,10 @@ function install_golang {
   local -r sha=$(grep -A10 "$latest_version" "$tmp_page" | grep "<td><tt>" | sed 's/<[^>]*>//g' | tr -d ' ')
 
   wget "$download_page$latest_version"
-  echo "${sha} ${latest_version}" | sha256sum --check || { echo "SHA doesn't match, exiting"; exit 1; }
+  echo "${sha} ${latest_version}" | sha256sum --check || {
+    echo "SHA doesn't match, exiting"
+    exit 1
+  }
   sudo rm -rf /usr/local/go/
   sudo tar -C /usr/local -xzf "$latest_version"
 
@@ -343,84 +349,84 @@ function install_tmuxinator {
 }
 
 function install_terminal_tools {
-    log_info "Installing oh-my-zsh ..."
-    curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
-    chsh -s "$(command -v zsh)"
+  log_info "Installing oh-my-zsh ..."
+  curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
+  chsh -s "$(command -v zsh)"
 
-    log_info "Installing zsh plugins..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
-    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  log_info "Installing zsh plugins..."
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
+  git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-    log_info "Installing fzf ..."
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install --all
+  log_info "Installing fzf ..."
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install --all
 
-    log_info "Installing plug ..."
-    curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  log_info "Installing plug ..."
+  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-    # If we want to install the latest version of bat:
-    #
-    # log_info "Installing batcat ..."
-    # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
-    # _tmp_dir="$(mktemp -d)"
-    # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
-    # | grep "tag_name" \
-    # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
-    # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
+  # If we want to install the latest version of bat:
+  #
+  # log_info "Installing batcat ..."
+  # # With the great help of https://geraldonit.com/2019/01/15/how-to-download-the-latest-github-repo-release-via-command-line/
+  # _tmp_dir="$(mktemp -d)"
+  # LOCATION=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest \
+  # | grep "tag_name" \
+  # | awk '{print "https://github.com/sharkdp/bat/archive/" substr($2, 2, length($2)-3) ".deb"}') \
+  # ; curl -L -o "${_tmp_dir}/bat.deb" "${LOCATION}"
 
-    log_info "Configuring bat ..."
-    # https://github.com/sharkdp/bat#on-ubuntu-using-apt
-    mkdir -p ~/.local/bin
-    ln -s /usr/bin/batcat ~/.local/bin/bat
+  log_info "Configuring bat ..."
+  # https://github.com/sharkdp/bat#on-ubuntu-using-apt
+  mkdir -p ~/.local/bin
+  ln -s /usr/bin/batcat ~/.local/bin/bat
 
-    log_info "Installing dotfiles ..."
-    local -r dotfiles_dir=~/src/hposca/dotfiles/
-    if [[ ! -d "${dotfiles_dir}" ]]; then
-      mkdir -p "${dotfiles_dir}"
-      git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
-    else
-      pushd "${dotfiles_dir}" || exit
-      git pull
-      popd || exit
-    fi
-    log_info "Creating symbolic links"
-    ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
-    ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
-    mkdir -p ~/.config/nvim/
-    ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
-    ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
+  log_info "Installing dotfiles ..."
+  local -r dotfiles_dir=~/src/hposca/dotfiles/
+  if [[ ! -d "${dotfiles_dir}" ]]; then
+    mkdir -p "${dotfiles_dir}"
+    git clone https://github.com/hposca/dotfiles.git "${dotfiles_dir}"
+  else
+    pushd "${dotfiles_dir}" || exit
+    git pull
+    popd || exit
+  fi
+  log_info "Creating symbolic links"
+  ln -sf "${dotfiles_dir}"/tmux.conf ~/.tmux.conf
+  ln -sf "${dotfiles_dir}"/zshrc ~/.zshrc
+  mkdir -p ~/.config/nvim/
+  ln -sf "${dotfiles_dir}"/init.vim ~/.config/nvim/init.vim
+  ln -sf "${dotfiles_dir}"/vimrcs ~/.config/nvim/vimrcs
 
-    _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-    # Gotta validate if this actually works at the first time the script is being executed
-    git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
-    ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
-    # This needs to be set on ~/.zshrc
-    # ZSH_THEME="spaceship"
+  _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+  # Gotta validate if this actually works at the first time the script is being executed
+  git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
+  ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
+  # This needs to be set on ~/.zshrc
+  # ZSH_THEME="spaceship"
 
-    log_info "Installing neovim plugins ..."
-    nvim "+silent! PlugInstall!" +qall!
-    nvim "+silent! GoInstallBinaries!" +qall!
-    # nvim "+silent! GoUpdateBinaries!" +qall!
+  log_info "Installing neovim plugins ..."
+  nvim "+silent! PlugInstall!" +qall!
+  nvim "+silent! GoInstallBinaries!" +qall!
+  # nvim "+silent! GoUpdateBinaries!" +qall!
 
-    git_clone_install tfenv https://github.com/tfutils/tfenv.git      "${HOME}/.tfenv"
-    git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
+  git_clone_install tfenv https://github.com/tfutils/tfenv.git "${HOME}/.tfenv"
+  git_clone_install tgenv https://github.com/cunymatthieu/tgenv.git "${HOME}/.tgenv"
 
-    github_compressed_install     kubens        ahmetb/kubectx             linux_x86_64.tar.gz
-    github_compressed_install     kubectx       ahmetb/kubectx             linux_x86_64.tar.gz
-    github_compressed_install     k9s           derailed/k9s               Linux_x86_64.tar.gz
-    github_compressed_install     terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
-    github_compressed_install_zip tflint        terraform-linters/tflint   linux_amd64.zip
+  github_compressed_install kubens ahmetb/kubectx linux_x86_64.tar.gz
+  github_compressed_install kubectx ahmetb/kubectx linux_x86_64.tar.gz
+  github_compressed_install k9s derailed/k9s Linux_x86_64.tar.gz
+  github_compressed_install terraform-lsp juliosueiras/terraform-lsp linux_amd64.tar.gz
+  github_compressed_install_zip tflint terraform-linters/tflint linux_amd64.zip
 
-    github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
-    github_compressed_inner_path_install gh    cli/cli          linux_amd64.tar.gz              2 bin/gh
-    github_compressed_inner_path_install wtf   wtfutil/wtf      linux_amd64.tar.gz              1 wtfutil
+  github_compressed_inner_path_install delta dandavison/delta x86_64-unknown-linux-gnu.tar.gz 1 delta
+  github_compressed_inner_path_install gh cli/cli linux_amd64.tar.gz 2 bin/gh
+  github_compressed_inner_path_install wtf wtfutil/wtf linux_amd64.tar.gz 1 wtfutil
 
-    github_binary_install aws-vault 99designs/aws-vault linux-amd64
+  github_binary_install aws-vault 99designs/aws-vault linux-amd64
 
-    install_kubectl
-    install_golang
-    # install_nodejs
-    install_tmuxinator
+  install_kubectl
+  install_golang
+  # install_nodejs
+  install_tmuxinator
 }
 
 function install_node_packages {
