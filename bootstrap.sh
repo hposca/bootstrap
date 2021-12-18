@@ -2,6 +2,8 @@
 
 # TODO: Install https://github.com/Mayccoll/Gogh.git and configure to use arthur
 # TODO: Install cheat.sh https://github.com/chubin/cheat.sh
+# TODO: Install cargo, Rust's package manager
+# TODO: apt-get install -y fonts-font-awesome
 
 # ------
 # Colors
