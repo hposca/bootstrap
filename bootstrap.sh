@@ -452,6 +452,7 @@ function install_aws_cli_v2 {
 	# To update an already installed version:
 	# sudo ./aws/install --update
 }
+
 function install_yarn() {
 	log_info "Installing yarn"
 
@@ -461,6 +462,22 @@ function install_yarn() {
 	sudo apt update
 	sudo DEBIAN_FRONTEND=noninteractive apt install -y yarn npm
 	# It will also install nodejs
+}
+
+function display_apps_infos() {
+	log_info "Important apps versions"
+
+	echo "AWS CLI version: $(aws --version)"
+	echo "Go version: $(go version)"
+	echo "JQ version: $(jq --version)"
+	echo "NPM version: $(npm --version)"
+	echo "NeoVim version: $(nvim --version | grep ^NVIM)"
+	echo "Node version: $(node --version)"
+	echo "NodeJS version: $(nodejs --version)"
+	echo "Python version: $(python3 --version)"
+	echo "Ruby version: $(ruby --version)"
+	echo "Yarn version: $(yarn --version)"
+
 }
 
 function main {
@@ -482,6 +499,8 @@ function main {
 	log_info "Total number of packages before process: ${packages_before}"
 	log_info "Total number of packages after process : ${packages_after}"
 	log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
+
+	display_apps_infos
 
 	log_warn "NOTE: It's recommended that you reboot your computer now."
 }
