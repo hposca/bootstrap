@@ -31,7 +31,7 @@ function log {
   local -r timestamp=$(date +"%Y-%m-%d %H:%M:%S")
   local -r nocolor='\033[0m'
 
-  echo -e "\n[${timestamp}] ${color}${message}${nocolor}\n"
+  echo -e "[${timestamp}] ${color}${message}${nocolor}"
 }
 
 function log_info {
@@ -64,6 +64,45 @@ function display_apps_infos() {
   echo "Yarn version: $(yarn --version)"
 }
 
+function install_base() {
+  log_info "Installing base packages..."
+
+  yay -Syu --noconfirm \
+    git \
+    python-pip
+
+  log_info "Installing base packages - DONE"
+}
+
+function install_configure_gogh() {
+  log_info "Installing gogh..."
+  yay -Syu --noconfirm \
+    python-pip
+
+  # clone the repo into "$HOME/src/gogh"
+  mkdir -p "$HOME/src"
+  pushd "$HOME/src" || return
+  git clone https://github.com/Gogh-Co/Gogh.git gogh
+  pushd gogh || return
+
+  # necessary in the Alacritty terminal
+  pip install -r requirements.txt
+  export TERMINAL=alacritty
+
+  # Enter themes dir
+  pushd themes || return
+
+  # install themes
+  # For this to work, it needs to have the colors.{primary,normal,bright} keys and values uncommented
+  # TODO: Make this work with some awk/sed
+  ./arthur.sh
+
+  popd || return
+  popd || return
+  popd || return
+
+}
+
 function install_terminal_tools() {
   log_info "Installing ZSH"
 
@@ -77,15 +116,32 @@ function install_terminal_tools() {
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
   git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-  log_info "Installing spaceship zsh theme"
+  log_info "Installing spaceship zsh theme..."
   _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-  # Gotta validate if this actually works at the first time the script is being executed
   git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
   ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
 
-  log_info "Setting ZSH as the default shell"
+  log_info "Setting ZSH as the default shell..."
 
   chsh -s "$(command -v zsh)"
+
+  log_info "Installing fzf..."
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install --all
+
+  log_info "Installing tmux..."
+  yay -Syu --noconfirm \
+    tmux
+
+  log_info "Installing alacritty..."
+  yay -Syu --noconfirm \
+    alacritty
+  mkdir -p "${HOME}/.config/alacritty"
+  cp /usr/share/doc/alacritty/example/alacritty.yml "${HOME}/.config/alacritty"
+
+  install_configure_gogh
+
+  log_info "ZSH Installation - DONE"
 }
 
 function main {
@@ -94,6 +150,7 @@ function main {
 
   log_info 'Beginning installation process ...'
 
+  install_base
   install_terminal_tools
 
   packages_after=$(yay -Q | wc -l)
