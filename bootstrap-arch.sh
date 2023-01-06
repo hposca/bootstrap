@@ -100,7 +100,6 @@ function install_configure_gogh() {
   popd || return
   popd || return
   popd || return
-
 }
 
 function install_terminal_tools() {
@@ -144,6 +143,27 @@ function install_terminal_tools() {
   log_info "ZSH Installation - DONE"
 }
 
+function xfce_caps_as_control() {
+  log_info "Configuring CAPS as Control..."
+
+  cat >"${HOME}/.config/autostart/CapsAsControl.desktop" <<EOF
+[Desktop Entry]
+Encoding=UTF-8
+Version=0.9.4
+Type=Application
+Name=CapsAsControl
+Comment=Caps as Control
+Exec=setxkbmap -option ctrl:nocaps
+OnlyShowIn=XFCE;
+RunHook=0
+StartupNotify=false
+Terminal=false
+Hidden=false
+EOF
+
+  log_info "Configuring CAPS as Control - DONE"
+}
+
 function main {
   SECONDS=0
   packages_before=$(yay -Q | wc -l)
@@ -152,6 +172,8 @@ function main {
 
   install_base
   install_terminal_tools
+
+  xfce_caps_as_control
 
   packages_after=$(yay -Q | wc -l)
   local -r duration=${SECONDS}
