@@ -69,6 +69,7 @@ function install_base() {
 
   yay -Syu --noconfirm \
     git \
+    nerd-fonts-droid-sans-mono \
     python-pip
 
   log_info "Installing base packages - DONE"
@@ -164,6 +165,27 @@ EOF
   log_info "Configuring CAPS as Control - DONE"
 }
 
+function install_lunarvim() {
+  log_info "Installing Lunarvim..."
+
+  yay -Syu --noconfirm \
+    community/npm \
+    fzf \
+    git \
+    lua \
+    neovim \
+    neovim-remote \
+    nodejs \
+    python-pynvim \
+    rust \
+    tree-sitter \
+    yarn
+
+  LV_BRANCH='release-1.2/neovim-0.8' bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) -y
+
+  log_info "Installing Lunarvim - DONE"
+}
+
 function main {
   SECONDS=0
   packages_before=$(yay -Q | wc -l)
@@ -174,6 +196,8 @@ function main {
   install_terminal_tools
 
   xfce_caps_as_control
+
+  install_lunarvim
 
   packages_after=$(yay -Q | wc -l)
   local -r duration=${SECONDS}
