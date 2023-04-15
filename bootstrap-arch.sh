@@ -61,7 +61,7 @@ function display_apps_infos() {
 }
 
 function install_packages() {
-  local -r packages="${1}"
+  local -r packages=("$@")
 
   log_info "Will install the following packages: $(
     IFS=','
@@ -80,7 +80,7 @@ function install_base() {
     nerd-fonts-droid-sans-mono
     python-pip
   )
-  install_packages packages
+  install_packages "${packages[@]}"
 
   log_info "Installing base packages - DONE"
 }
@@ -92,7 +92,7 @@ function install_configure_gogh() {
   packages=(
     python-pip
   )
-  install_packages packages
+  install_packages "${packages[@]}"
 
   # clone the repo into "$HOME/src/gogh"
   mkdir -p "$HOME/src"
@@ -124,7 +124,7 @@ function install_terminal_tools() {
   packages=(
     zsh
   )
-  install_packages packages
+  install_packages "${packages[@]}"
 
   log_info "Installing oh-my-zsh ..."
   curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
@@ -151,14 +151,14 @@ function install_terminal_tools() {
   packages=(
     tmux
   )
-  install_packages packages
+  install_packages "${packages[@]}"
 
   log_info "Installing alacritty..."
   declare -a packages
   packages=(
     alacritty
   )
-  install_packages packages
+  install_packages "${packages[@]}"
   mkdir -p "${HOME}/.config/alacritty"
   cp /usr/share/doc/alacritty/example/alacritty.yml "${HOME}/.config/alacritty"
 
@@ -205,7 +205,7 @@ function install_lunarvim() {
     tree-sitter
     yarn
   )
-  install_packages packages
+  install_packages "${packages[@]}"
 
   LV_BRANCH='release-1.2/neovim-0.8' bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) -y
 
