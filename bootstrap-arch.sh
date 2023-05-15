@@ -77,10 +77,16 @@ function install_base() {
   declare -a packages
   packages=(
     git
-    nerd-fonts-droid-sans-mono
+    ttf-roboto-mono-nerd
+    ttf-nerd-fonts-symbols-2048-em
+    ttf-nerd-fonts-symbols-2048-em-mono
+    ttf-font-awesome
     python-pip
   )
   install_packages "${packages[@]}"
+
+  log_info "Refreshing installed fonts"
+  fc-cache -fv
 
   log_info "Installing base packages - DONE"
 }
@@ -130,12 +136,12 @@ function install_terminal_tools() {
   curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sh
 
   log_info "Installing zsh plugins..."
-  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
-  git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+  git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
+  git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
   log_info "Installing spaceship zsh theme..."
   _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-  git clone https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
+  git clone --depth 1 https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
   ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
 
   log_info "Setting ZSH as the default shell..."
@@ -162,7 +168,7 @@ function install_terminal_tools() {
   mkdir -p "${HOME}/.config/alacritty"
   cp /usr/share/doc/alacritty/example/alacritty.yml "${HOME}/.config/alacritty"
 
-  install_configure_gogh
+  # install_configure_gogh
 
   log_info "ZSH Installation - DONE"
 }
@@ -193,21 +199,27 @@ function install_lunarvim() {
 
   declare -a packages
   packages=(
-    community/npm
+    bottom
     fzf
+    gdu
     git
+    go
+    jq
+    lazygit
     lua
     neovim
     neovim-remote
     nodejs
+    npm
     python-pynvim
+    ripgrep
     rust
     tree-sitter
     yarn
   )
   install_packages "${packages[@]}"
 
-  LV_BRANCH='release-1.2/neovim-0.8' bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) -y
+  # LV_BRANCH='release-1.2/neovim-0.8' bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) -y
 
   log_info "Installing Lunarvim - DONE"
 }
@@ -217,6 +229,8 @@ function main {
   packages_before=$(yay -Q | wc -l)
 
   log_info 'Beginning installation process ...'
+
+  display_apps_infos
 
   install_base
   install_terminal_tools
@@ -232,7 +246,7 @@ function main {
   log_info "Total number of packages after process : ${packages_after}"
   log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
 
-  # display_apps_infos
+  display_apps_infos
 
   log_warn "NOTE: It's recommended that you reboot your computer now."
 }
