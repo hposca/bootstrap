@@ -49,8 +49,11 @@ terminal_packages=(
 
 declare -a development_packages
 development_packages=(
+	aur/tfenv
 	aws-cli-v2
 	bottom # Usage: btm
+	community/k9s
+	community/kubectl
 	fzf
 	gdu
 	git
@@ -97,6 +100,8 @@ function display_apps_infos() {
 	echo "Cargo version: $(cargo version)"
 	echo "Go version: $(go version)"
 	echo "JQ version: $(jq --version)"
+	echo "K9S version: $(k9s version)"
+	echo "kubectl version: $(kubectl version)"
 	echo "NeoVim version: $(nvim --version | grep ^NVIM)"
 	# echo "NodeJS version: $(nodejs --version)"
 	echo "Node version: $(node --version)"
@@ -105,6 +110,7 @@ function display_apps_infos() {
 	echo "Python version: $(python --version)"
 	echo "Ruby version: $(ruby --version)"
 	echo "Rust version: $(rustc --version)"
+	echo "TFEnv version: $(tfenv --version)"
 	echo "Yarn version: $(yarn --version)"
 }
 
