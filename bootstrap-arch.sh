@@ -27,23 +27,35 @@ YELLOW='\033[1;33m'
 
 declare -a base_packages
 base_packages=(
+	curl
 	git
-	ttf-roboto-mono-nerd
-	ttf-nerd-fonts-symbols-2048-em
-	ttf-nerd-fonts-symbols-2048-em-mono
+	python-pip
 	ttf-font-awesome
-	python-pip
-)
-
-declare -a gogh_packages
-gogh_packages=(
-	python-pip
+	# ttf-nerd-fonts-symbols-2048-em
+	# ttf-nerd-fonts-symbols-2048-em-mono
+	ttf-roboto-mono-nerd
+	wget
 )
 
 declare -a terminal_packages
 terminal_packages=(
 	alacritty
+	bat
+	git-delta
+	glow
+	htop
+	iftop
+	iotop
+	ipcalc
+	ncdu
+	neofetch
+	ranger
+	screenfetch
+	tig
 	tmux
+	tree
+	w3m
+	yt-dlp
 	zsh
 )
 
@@ -54,6 +66,10 @@ development_packages=(
 	bottom # Usage: btm
 	community/k9s
 	community/kubectl
+	docker
+	docker-buildx
+	docker-compose
+	docker-scan
 	fzf
 	gdu
 	git
@@ -71,6 +87,27 @@ development_packages=(
 	rust
 	tree-sitter
 	yarn
+	yq
+)
+
+declare -a desktop_packages
+desktop_packages=(
+	aur/enpass-bin
+	barrier
+	digikam
+	gnucash
+	gnucash-docs
+	steam
+	vlc
+	#
+	chromium
+	firefox
+	firefox-developer-edition
+	#
+	gkrellm
+	gparted
+	#
+	virtualbox
 )
 
 function log {
@@ -98,6 +135,7 @@ function display_apps_infos() {
 
 	echo "AWS CLI version: $(aws --version)"
 	echo "Cargo version: $(cargo version)"
+	echo "Git version: $(git --version)"
 	echo "Go version: $(go version)"
 	echo "JQ version: $(jq --version)"
 	echo "K9S version: $(k9s version)"
@@ -112,6 +150,7 @@ function display_apps_infos() {
 	echo "Rust version: $(rustc --version)"
 	echo "TFEnv version: $(tfenv --version)"
 	echo "Yarn version: $(yarn --version)"
+	echo "YQ version: $(yq --version)"
 }
 
 function install_packages() {
@@ -138,8 +177,6 @@ function install_base() {
 
 function install_configure_gogh() {
 	log_info "Installing gogh..."
-
-	install_packages "${gogh_packages[@]}"
 
 	# clone the repo into "$HOME/src/gogh"
 	mkdir -p "$HOME/src"
@@ -196,7 +233,19 @@ function install_terminal_tools() {
 
 	# install_configure_gogh
 
+	log_info "Configuring ranger..."
+	ranger --copy-config=rc
+	sed -i 's/set preview_images false/set preview_images true/g' ~/.config/ranger/rc.conf
+
 	log_info "Terminal Tools Installation - DONE"
+}
+
+function install_desktop_tools() {
+	log_info "Installing desktop tools"
+
+	install_packages "${desktop_packages[@]}"
+
+	log_info "Desktop Tools Installation - DONE"
 }
 
 function xfce_caps_as_control() {
@@ -249,6 +298,7 @@ function main {
 
 	install_base
 	install_terminal_tools
+	install_desktop_tools
 
 	xfce_caps_as_control
 
