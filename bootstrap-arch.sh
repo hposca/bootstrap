@@ -292,9 +292,6 @@ function prepare_dotfiles() {
 	local -r clone_location="${HOME}/src/hposca/dotfiles"
 	mkdir -p "${clone_location}"
 
-	log_info "Cloning LazyVim..."
-	git clone --depth 1 https://github.com/LazyVim/starter "${HOME}/.config/LazyVim"
-
 	log_info "Cloning dotfiles..."
 	git clone --depth 1 https://github.com/hposca/dotfiles "${clone_location}"
 
@@ -305,7 +302,6 @@ function prepare_dotfiles() {
 
 	log_info "Making sure directories exist..."
 	mkdir -p "${HOME}/.config/alacritty/"
-	mkdir -p "${HOME}/.config/LazyVim/"
 	mkdir -p "${HOME}/.config/tmux/"
 
 	log_info "Symlinking dotfiles..."
@@ -313,6 +309,17 @@ function prepare_dotfiles() {
 	ln -sf "$(readlink -f tmux.conf)" "${HOME}/.config/tmux/.tmux.conf"
 	ln -sf "$(readlink -f zshrc)" "${HOME}/.zshrc"
 	ln -sf "$(readlink -f alacritty.yml)" "${HOME}/.config/alacritty/alacritty.yml"
+	popd || exit
+}
+
+function install_text_editor() {
+	local -r dotfiles_location="${HOME}/src/hposca/dotfiles"
+
+	log_info "Cloning LazyVim..."
+	git clone --depth 1 https://github.com/LazyVim/starter "${HOME}/.config/LazyVim"
+
+	log_info "Symlinking dotfiles..."
+	pushd "${dotfiles_location}" || exit
 	mv "${HOME}/.config/LazyVim/lua" "${HOME}/.config/LazyVim/lua-backup"
 	ln -sf "$(readlink -f LazyVim/lua)" "${HOME}/.config/LazyVim/"
 	ln -sf "$(readlink -f snippets)" "${HOME}/.config/LazyVim/"
@@ -328,18 +335,19 @@ function main {
 
 	log_info 'Beginning installation process ...'
 
-	# display_apps_infos
+	display_apps_infos
 
-	# install_base
-	# install_terminal_tools
-	# install_desktop_tools
-	#
-	# xfce_caps_as_control
-	#
-	# install_development_tools
-	# install_lunarvim
+	install_base
+	install_terminal_tools
+	install_desktop_tools
+
+	xfce_caps_as_control
+
+	install_development_tools
+	install_lunarvim
 
 	prepare_dotfiles
+	install_text_editor
 
 	packages_after=$(yay -Q | wc -l)
 	local -r duration=${SECONDS}
@@ -348,7 +356,7 @@ function main {
 	log_info "Total number of packages after process : ${packages_after}"
 	log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
 
-	# display_apps_infos
+	display_apps_infos
 
 	log_warn "NOTE: It's recommended that you reboot your computer now."
 }
