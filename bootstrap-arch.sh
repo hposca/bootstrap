@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO: Install https://github.com/Mayccoll/Gogh.git and configure to use arthur
-# TODO: Install cheat.sh https://github.com/chubin/cheat.sh
-# TODO: Install cargo, Rust's package manager
-# TODO: apt-get install -y fonts-font-awesome
-
 # ------
 # Colors
 # ------
@@ -31,8 +26,6 @@ base_packages=(
 	git
 	python-pip
 	ttf-font-awesome
-	# ttf-nerd-fonts-symbols-2048-em
-	# ttf-nerd-fonts-symbols-2048-em-mono
 	ttf-roboto-mono-nerd
 	wget
 )
@@ -40,7 +33,10 @@ base_packages=(
 declare -a terminal_packages
 terminal_packages=(
 	alacritty
+	aur/cht.sh-git
+	aur/gogh-git
 	bat
+	fdupes
 	git-delta
 	glow
 	htop
@@ -81,6 +77,7 @@ development_packages=(
 	neovim-remote
 	nodejs
 	npm
+	python-pre-commit
 	python-pynvim
 	ripgrep
 	ruby
@@ -103,6 +100,7 @@ desktop_packages=(
 	chromium
 	firefox
 	firefox-developer-edition
+	aur/zoom
 	#
 	gkrellm
 	gparted
@@ -173,32 +171,6 @@ function install_base() {
 	fc-cache -fv
 
 	log_info "Installing base packages - DONE"
-}
-
-function install_configure_gogh() {
-	log_info "Installing gogh..."
-
-	# clone the repo into "$HOME/src/gogh"
-	mkdir -p "$HOME/src"
-	pushd "$HOME/src" || return
-	git clone https://github.com/Gogh-Co/Gogh.git gogh
-	pushd gogh || return
-
-	# necessary in the Alacritty terminal
-	pip install -r requirements.txt
-	export TERMINAL=alacritty
-
-	# Enter themes dir
-	pushd themes || return
-
-	# install themes
-	# For this to work, it needs to have the colors.{primary,normal,bright} keys and values uncommented
-	# TODO: Make this work with some awk/sed
-	./arthur.sh
-
-	popd || return
-	popd || return
-	popd || return
 }
 
 function install_terminal_tools() {
