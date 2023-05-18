@@ -198,13 +198,6 @@ function install_terminal_tools() {
 	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 	~/.fzf/install --all
 
-	log_info "Configuring alacritty..."
-
-	mkdir -p "${HOME}/.config/alacritty"
-	cp /usr/share/doc/alacritty/example/alacritty.yml "${HOME}/.config/alacritty"
-
-	# install_configure_gogh
-
 	log_info "Configuring ranger..."
 	ranger --copy-config=rc
 	sed -i 's/set preview_images false/set preview_images true/g' ~/.config/ranger/rc.conf
@@ -260,6 +253,7 @@ function install_lunarvim() {
 	log_info "Installing Lunarvim - DONE"
 }
 
+# This function installs and configure dependencies for the dotfiles to work propertly
 function prepare_dotfiles() {
 	local -r clone_location="${HOME}/src/hposca/dotfiles"
 	mkdir -p "${clone_location}"
@@ -272,14 +266,25 @@ function prepare_dotfiles() {
 	git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
 	ln -sf "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
 
+	log_info 'Installing Tmux Plugin Manager...'
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm --depth=1
+	log_info 'Installing Tmux Plugins...'
+	~/.tmux/plugins/tpm/scripts/install_plugins.sh
+	log_info 'Tmux Plugins Installed...'
+
 	log_info "Making sure directories exist..."
 	mkdir -p "${HOME}/.config/alacritty/"
 	mkdir -p "${HOME}/.config/tmux/"
 
+	# log_info "Configuring alacritty..."
+	# mkdir -p "${HOME}/.config/alacritty"
+	# cp /usr/share/doc/alacritty/example/alacritty.yml "${HOME}/.config/alacritty"
+
 	log_info "Symlinking dotfiles..."
 	pushd "${clone_location}" || exit
-	ln -sf "$(readlink -f tmux.conf)" "${HOME}/.config/tmux/.tmux.conf"
+	ln -sf "$(readlink -f tmux.conf)" "${HOME}/.config/tmux/tmux.conf"
 	ln -sf "$(readlink -f zshrc)" "${HOME}/.zshrc"
+	mv "${HOME}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml.backup"
 	ln -sf "$(readlink -f alacritty.yml)" "${HOME}/.config/alacritty/alacritty.yml"
 	popd || exit
 }
@@ -301,7 +306,7 @@ function install_text_editor() {
 	NVIM_APPNAME=LazyVim nvim --headless "+Lazy! sync" +qa
 }
 
-function main {
+function main() {
 	SECONDS=0
 	packages_before=$(yay -Q | wc -l)
 
