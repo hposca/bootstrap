@@ -22,6 +22,8 @@ YELLOW='\033[1;33m'
 
 declare -a base_packages
 base_packages=(
+	archlinux-keyring
+	endeavouros-keyring
 	curl
 	git
 	python-pip
