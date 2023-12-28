@@ -36,6 +36,7 @@ declare -a terminal_packages
 terminal_packages=(
 	alacritty
 	aur/cht.sh-git
+	aur/clevo-indicator-git
 	aur/gogh-git
 	bat
 	fdupes
@@ -61,6 +62,7 @@ declare -a development_packages
 development_packages=(
 	aur/tfenv
 	aws-cli-v2
+	aws-vault
 	bottom # Usage: btm
 	community/k9s
 	community/kubectl
@@ -92,12 +94,21 @@ development_packages=(
 declare -a desktop_packages
 desktop_packages=(
 	aur/enpass-bin
+	aur/rofi-greenclip
+	aur/xkblayout-state-git
 	barrier
 	digikam
 	gnucash
 	gnucash-docs
+	libreoffice-still
+	libreoffice-still-br
+	libreoffice-still-ca
+	power-profiles-daemon
 	steam
 	vlc
+	#
+	rofimoji
+	xdotool
 	#
 	chromium
 	firefox
@@ -131,26 +142,31 @@ function log_warn {
 }
 
 function display_apps_infos() {
+	local -r moment="${1}"
+	local -r filename="${apps-infos-}${moment}.txt"
+
 	log_info "Important apps versions"
 
-	echo "AWS CLI version: $(aws --version)"
-	echo "Cargo version: $(cargo version)"
-	echo "Git version: $(git --version)"
-	echo "Go version: $(go version)"
-	echo "JQ version: $(jq --version)"
-	echo "K9S version: $(k9s version)"
-	echo "kubectl version: $(kubectl version)"
-	echo "NeoVim version: $(nvim --version | grep ^NVIM)"
-	# echo "NodeJS version: $(nodejs --version)"
-	echo "Node version: $(node --version)"
-	echo "NPM version: $(npm --version)"
-	echo "Pip version: $(pip --version)"
-	echo "Python version: $(python --version)"
-	echo "Ruby version: $(ruby --version)"
-	echo "Rust version: $(rustc --version)"
-	echo "TFEnv version: $(tfenv --version)"
-	echo "Yarn version: $(yarn --version)"
-	echo "YQ version: $(yq --version)"
+	{
+		echo "AWS CLI version: $(aws --version)"
+		echo "Cargo version: $(cargo version)"
+		echo "Git version: $(git --version)"
+		echo "Go version: $(go version)"
+		echo "JQ version: $(jq --version)"
+		echo "K9S version: $(k9s version)"
+		echo "kubectl version: $(kubectl version)"
+		echo "NeoVim version: $(nvim --version | grep ^NVIM)"
+		# echo "NodeJS version: $(nodejs --version)"
+		echo "Node version: $(node --version)"
+		echo "NPM version: $(npm --version)"
+		echo "Pip version: $(pip --version)"
+		echo "Python version: $(python --version)"
+		echo "Ruby version: $(ruby --version)"
+		echo "Rust version: $(rustc --version)"
+		echo "TFEnv version: $(tfenv --version)"
+		echo "Yarn version: $(yarn --version)"
+		echo "YQ version: $(yq --version)"
+	} | tee "${filename}"
 }
 
 function install_packages() {
@@ -236,6 +252,14 @@ EOF
 	log_info "Configuring CAPS as Control - DONE"
 }
 
+function install_fonts() {
+	log_info "Instaling fonts..."
+
+	yay -Sgq nerd-fonts | yay -Syu --noconfirm -
+
+	log_info "Done Instaling fonts"
+}
+
 function install_development_tools() {
 	log_info "Installing development tools..."
 
@@ -314,7 +338,7 @@ function main() {
 
 	log_info 'Beginning installation process ...'
 
-	display_apps_infos
+	display_apps_infos "before"
 
 	install_base
 	install_terminal_tools
@@ -335,7 +359,7 @@ function main() {
 	log_info "Total number of packages after process : ${packages_after}"
 	log_info "The entire installation process took $((duration / 60)) minutes and $((duration % 60)) seconds."
 
-	display_apps_infos
+	display_apps_infos "after"
 
 	log_warn "NOTE: It's recommended that you reboot your computer now."
 }
