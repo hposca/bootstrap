@@ -271,14 +271,6 @@ function install_development_tools() {
 	log_info "Installing development tools - DONE"
 }
 
-function install_lunarvim() {
-	log_info "Installing Lunarvim..."
-
-	# LV_BRANCH='release-1.2/neovim-0.8' bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/installer/install.sh) -y
-
-	log_info "Installing Lunarvim - DONE"
-}
-
 # This function installs and configure dependencies for the dotfiles to work propertly
 function prepare_dotfiles() {
 	local -r clone_location="${HOME}/src/hposca/dotfiles"
@@ -347,7 +339,6 @@ function main() {
 	xfce_caps_as_control
 
 	install_development_tools
-	install_lunarvim
 
 	prepare_dotfiles
 	install_text_editor
