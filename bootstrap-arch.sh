@@ -64,8 +64,9 @@ development_packages=(
 	aws-cli-v2
 	aws-vault
 	bottom # Usage: btm
-	community/k9s
-	community/kubectl
+	k9s
+	kubectl
+	kubectx
 	docker
 	docker-buildx
 	docker-compose
@@ -284,15 +285,8 @@ function prepare_dotfiles() {
 	git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
 	ln -sf "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
 
-	log_info 'Installing Tmux Plugin Manager...'
-	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm --depth=1
-	log_info 'Installing Tmux Plugins...'
-	~/.tmux/plugins/tpm/scripts/install_plugins.sh
-	log_info 'Tmux Plugins Installed...'
-
 	log_info "Making sure directories exist..."
 	mkdir -p "${HOME}/.config/alacritty/"
-	mkdir -p "${HOME}/.config/tmux/"
 
 	# log_info "Configuring alacritty..."
 	# mkdir -p "${HOME}/.config/alacritty"
@@ -305,6 +299,13 @@ function prepare_dotfiles() {
 	mv "${HOME}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml.backup"
 	ln -sf "$(readlink -f alacritty.yml)" "${HOME}/.config/alacritty/alacritty.yml"
 	popd || exit
+
+	mkdir -p "${HOME}/.config/tmux/"
+	log_info 'Installing Tmux Plugin Manager...'
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm --depth=1
+	log_info 'Installing Tmux Plugins...'
+	~/.tmux/plugins/tpm/scripts/install_plugins.sh
+	log_info 'Tmux Plugins Installed...'
 }
 
 function install_text_editor() {
