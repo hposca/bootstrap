@@ -54,6 +54,7 @@ terminal_packages=(
 	tmux
 	tree
 	w3m
+	xclip
 	yt-dlp
 	zsh
 )
@@ -65,8 +66,10 @@ development_packages=(
 	aws-vault
 	bottom # Usage: btm
 	k9s
+	kind
 	kubectl
 	kubectx
+	kustomize
 	docker
 	docker-buildx
 	docker-compose
@@ -75,6 +78,9 @@ development_packages=(
 	gdu
 	git
 	go
+	golangci-lint
+	helm
+	istio
 	jq
 	lazygit
 	lua
@@ -84,6 +90,7 @@ development_packages=(
 	npm
 	python-pre-commit
 	python-pynvim
+	python-pipx
 	ripgrep
 	ruby
 	rust
@@ -114,6 +121,7 @@ desktop_packages=(
 	chromium
 	firefox
 	firefox-developer-edition
+	aur/slack-desktop
 	aur/zoom
 	#
 	gkrellm
@@ -357,3 +365,8 @@ function main() {
 }
 
 main "${@}"
+
+# TODO:
+# systemctl enable docker.service
+# systemctl start docker.service
+# usermod -aG docker ${USER}
