@@ -366,7 +366,23 @@ function main() {
 
 main "${@}"
 
+# TODO
+# Fix clevo-indicator
+#
 # TODO:
 # systemctl enable docker.service
 # systemctl start docker.service
 # usermod -aG docker ${USER}
+#
+# TODO
+# First time they were installed (all at once) it failed, running one by one, later, worked
+# Maybe they are not even necessary. Clementine does not work, but mpv does.
+# As per [this post](https://bbs.archlinux.org/viewtopic.php?id=160115) maybe
+# install gstreamer0.10-plugins
+# yay -Sy gstreamer0.10-base-plugins gstreamer0.10-good-plugins gstreamer0.10-bad-plugins gstreamer0.10-ugly-plugins
+#
+# TODO
+# yay -Sy --noconfirm gnome-system-monitor
+#
+# TODO
+# yay -Sy --noconfirm github-cli
