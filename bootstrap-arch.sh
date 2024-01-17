@@ -36,7 +36,6 @@ declare -a terminal_packages
 terminal_packages=(
 	alacritty
 	aur/cht.sh-git
-	aur/clevo-indicator-git
 	aur/gogh-git
 	bat
 	fdupes
@@ -79,6 +78,7 @@ development_packages=(
 	git
 	go
 	golangci-lint
+	github-cli
 	helm
 	istio
 	jq
@@ -126,6 +126,7 @@ desktop_packages=(
 	#
 	gkrellm
 	gparted
+	gnome-system-monitor
 	#
 	virtualbox
 )
@@ -333,6 +334,47 @@ function install_text_editor() {
 	NVIM_APPNAME=LazyVim nvim --headless "+Lazy! sync" +qa
 }
 
+function enable_docker() {
+	sudo systemctl enable docker.service
+	sudo systemctl start docker.service
+	sudo usermod -aG docker "${USER}"
+	# NOTE: Will need to logout-login for it to take effect
+}
+
+# First time they were installed (all at once) it failed, running one by one, later, worked.
+# This is why I'm installing them one by one
+function install_gstreamer() {
+	yay -Syu --noconfirm gstreamer0.10-base-plugins
+	yay -Syu --noconfirm gstreamer0.10-good-plugins
+	yay -Syu --noconfirm gstreamer0.10-bad-plugins
+	yay -Syu --noconfirm gstreamer0.10-ugly-plugins
+}
+
+function install_system76_stuff() {
+	yay -Syu --noconfirm system76-dkms
+
+	# For system76-power had to configure cargo before:
+	# 	cat <<EOF >"${HOME}/.cargo/config"
+	# [net]
+	# git-fetch-with-cli = true
+	# EOF
+	# yay -Syu --noconfirm system76-dkms system76-driver system76-firmware system76-power
+}
+
+# Not tests, but these where the steps I had to do
+function install_clevo_indicator() {
+	mkdir -p "${HOME}/src/github/"
+	pushd "${HOME}/src/github/" || return
+	git clone git@github.com:dbeniamine/clevo-indicator.git
+	popd || return
+	pushd "${HOME}/src/github/clevo-indicator" || return
+	make
+	sudo chown root bin/clevo-indicator
+	sudo chmod u+s bin/clevo-indicator
+	sudo mv bin/clevo-indicator "${HOME}/.local/bin/"
+	popd || return
+}
+
 function main() {
 	SECONDS=0
 	packages_before=$(yay -Q | wc -l)
@@ -352,6 +394,11 @@ function main() {
 	prepare_dotfiles
 	install_text_editor
 
+	enable_docker
+	install_gstreamer
+	install_system76_stuff
+	install_clevo_indicator
+
 	packages_after=$(yay -Q | wc -l)
 	local -r duration=${SECONDS}
 
@@ -365,24 +412,3 @@ function main() {
 }
 
 main "${@}"
-
-# TODO
-# Fix clevo-indicator
-#
-# TODO:
-# systemctl enable docker.service
-# systemctl start docker.service
-# usermod -aG docker ${USER}
-#
-# TODO
-# First time they were installed (all at once) it failed, running one by one, later, worked
-# Maybe they are not even necessary. Clementine does not work, but mpv does.
-# As per [this post](https://bbs.archlinux.org/viewtopic.php?id=160115) maybe
-# install gstreamer0.10-plugins
-# yay -Sy gstreamer0.10-base-plugins gstreamer0.10-good-plugins gstreamer0.10-bad-plugins gstreamer0.10-ugly-plugins
-#
-# TODO
-# yay -Sy --noconfirm gnome-system-monitor
-#
-# TODO
-# yay -Sy --noconfirm github-cli
