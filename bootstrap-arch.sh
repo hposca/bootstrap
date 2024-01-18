@@ -113,6 +113,7 @@ desktop_packages=(
 	libreoffice-still-ca
 	power-profiles-daemon
 	steam
+	syncthing
 	vlc
 	#
 	rofimoji
@@ -375,6 +376,14 @@ function install_clevo_indicator() {
 	popd || return
 }
 
+function configure_syncthing() {
+	sudo systemctl enable "syncthing@$(whoami).service"
+	sudo systemctl start "syncthing@$(whoami).service"
+	sed -i.bak 's;<address>127.0.0.1:8384</address>;<address>0.0.0.0:8384</address>;' "${HOME}/.local/state/syncthing/config.xml"
+	sudo systemctl restart "syncthing@$(whoami).service"
+	# NOTE: Have to enable access to port 22000 on the firewall
+}
+
 function main() {
 	SECONDS=0
 	packages_before=$(yay -Q | wc -l)
@@ -398,6 +407,7 @@ function main() {
 	install_gstreamer
 	install_system76_stuff
 	install_clevo_indicator
+	configure_syncthing
 
 	packages_after=$(yay -Q | wc -l)
 	local -r duration=${SECONDS}
