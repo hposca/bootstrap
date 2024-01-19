@@ -119,6 +119,9 @@ desktop_packages=(
 	rofimoji
 	xdotool
 	#
+	nvidia
+	nvidia-settings
+	#
 	chromium
 	firefox
 	firefox-developer-edition
