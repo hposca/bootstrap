@@ -392,9 +392,10 @@ function display_recommendations() {
 Don't forget to add the following lines into your /etc/profile :
 
 # https://forum.endeavouros.com/t/ten-tweaks-for-eos-i3-wm-on-lenovo-with-high-dpi/10363
-export QT_SCREEN_SCALE_FACTORS=1
+export QT_AUTO_SCREEN_SCALE_FACTOR=0
+export QT_SCREEN_SCALE_FACTORS=0.99
 export GDK_SCALE=1
-export GDK_DPI_SCALE=1.0
+export GDK_DPI_SCALE=0.80
 
 And this line into your ~/.Xresources :
 
