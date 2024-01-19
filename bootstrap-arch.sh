@@ -384,6 +384,21 @@ function configure_syncthing() {
 	# NOTE: Have to enable access to port 22000 on the firewall
 }
 
+function display_recommendations() {
+	cat <<EOF
+Don't forget to add the following lines into your /etc/profile :
+
+# https://forum.endeavouros.com/t/ten-tweaks-for-eos-i3-wm-on-lenovo-with-high-dpi/10363
+export QT_SCREEN_SCALE_FACTORS=1
+export GDK_SCALE=1
+export GDK_DPI_SCALE=1.0
+
+And this line into your ~/.Xresources :
+
+Xft.dpi: 120
+
+EOF
+}
 function main() {
 	SECONDS=0
 	packages_before=$(yay -Q | wc -l)
@@ -408,6 +423,8 @@ function main() {
 	install_system76_stuff
 	install_clevo_indicator
 	configure_syncthing
+
+	display_recommendations
 
 	packages_after=$(yay -Q | wc -l)
 	local -r duration=${SECONDS}
