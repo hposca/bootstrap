@@ -49,6 +49,7 @@ terminal_packages=(
 	neofetch
 	ranger
 	screenfetch
+	sshfs
 	tig
 	tmux
 	tree
