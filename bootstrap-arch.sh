@@ -403,6 +403,22 @@ Xft.dpi: 120
 
 EOF
 }
+
+function install_tgz() {
+	tgz_filename="${1}"
+	download_url="${2}"
+	inner_file_path="${3}"
+
+	curl -s -Lo "${tgz_filename}" "${download_url}"
+	tar xf "${tgz_filename}" -C "${HOME}/.local/bin/" "${inner_file_path}"
+	rm -rf "${tgz_filename}"
+}
+
+ISTIOCTL_VERSION=1.20.2
+function install_istioctl() {
+	install_tgz "istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz" "https://github.com/istio/istio/releases/download/${ISTIOCTL_VERSION}/istioctl-${ISTIOCTL_VERSION}-linux-amd64.tar.gz" "istioctl"
+}
+
 function main() {
 	SECONDS=0
 	packages_before=$(yay -Q | wc -l)
@@ -429,6 +445,8 @@ function main() {
 	configure_syncthing
 
 	display_recommendations
+
+	install_istioctl
 
 	packages_after=$(yay -Q | wc -l)
 	local -r duration=${SECONDS}
