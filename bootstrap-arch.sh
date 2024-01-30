@@ -39,6 +39,7 @@ terminal_packages=(
 	aur/gogh-git
 	bat
 	fdupes
+	fx
 	git-delta
 	glow
 	htop
