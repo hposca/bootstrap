@@ -140,6 +140,11 @@ desktop_packages=(
 	gnome-system-monitor
 	#
 	virtualbox
+	#
+	zathura
+	zathura-djvu
+	zathura-pdf-mupdf
+	zathura-ps
 )
 
 function log {
