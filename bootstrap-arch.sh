@@ -66,11 +66,7 @@ development_packages=(
 	aws-cli-v2
 	aws-vault
 	bottom # Usage: btm
-	k9s
-	kind
-	kubectl
-	kubectx
-	kustomize
+	direnv
 	docker
 	docker-buildx
 	docker-compose
@@ -78,21 +74,30 @@ development_packages=(
 	fzf
 	gdu
 	git
+	git-crypt
+	github-cli
+	git-lfs
 	go
 	golangci-lint
-	github-cli
+	google-cloud-cli
+	google-cloud-cli-gke-gcloud-auth-plugin
 	helm
 	istio
 	jq
+	k9s
+	kind
+	kubectl
+	kubectx
+	kustomize
 	lazygit
 	lua
 	neovim
 	neovim-remote
 	nodejs
 	npm
+	python-pipx
 	python-pre-commit
 	python-pynvim
-	python-pipx
 	ripgrep
 	ruby
 	rust
