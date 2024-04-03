@@ -399,6 +399,26 @@ function configure_syncthing() {
 	# NOTE: Have to enable access to port 22000 on the firewall
 }
 
+# NOT TESTED - Essentialy note taking
+# Based on https://github.com/debauchee/barrier/issues/231#issuecomment-456327061
+function generate_barrier_certs() {
+	log_info "Generating certificates for barrier..."
+
+	_barrier_base_dir="${HOME}/.local/share/barrier/"
+	_ssl_dir="${_barrier_base_dir}/SSL/"
+	_pem_path="${_ssl_dir}/Barrier.pem"
+	_fingerprints_dir="${_ssl_dir}/Fingerprints/"
+	_local_fingerprints_path="${_fingerprints_dir}/Local.txt"
+
+	mkdir -p "${_fingerprints_dir}"
+	pushd "${_ssl_dir}" || return
+	openssl req -x509 -nodes -days 365 -subj /CN=Barrier -newkey rsa:4096 -keyout "${_pem_path}" -out "${_pem_path}"
+	openssl x509 -fingerprint -sha1 -noout -in "${_pem_path}" >"${_local_fingerprints_path}"
+	popd || return
+
+	log_info "barrier certificates creation done."
+}
+
 function display_recommendations() {
 	cat <<EOF
 Don't forget to add the following lines into your /etc/profile :
@@ -455,6 +475,7 @@ function main() {
 	install_system76_stuff
 	install_clevo_indicator
 	configure_syncthing
+	generate_barrier_certs
 
 	display_recommendations
 
