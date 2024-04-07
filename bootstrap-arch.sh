@@ -138,6 +138,7 @@ desktop_packages=(
 	gkrellm
 	gparted
 	gnome-system-monitor
+	prometheus-node-exporter
 	#
 	virtualbox
 	#
@@ -399,6 +400,13 @@ function configure_syncthing() {
 	# NOTE: Have to enable access to port 22000 on the firewall
 }
 
+function enable_prometheus() {
+	sudo systemctl enable prometheus-node-exporter.service
+	sudo systemctl start prometheus-node-exporter.service
+	# To verify if metrics are being exported:
+	# curl http://localhost:9100/metrics
+}
+
 # NOT TESTED - Essentialy note taking
 # Based on https://github.com/debauchee/barrier/issues/231#issuecomment-456327061
 function generate_barrier_certs() {
@@ -475,6 +483,7 @@ function main() {
 	install_system76_stuff
 	install_clevo_indicator
 	configure_syncthing
+	enable_prometheus
 	generate_barrier_certs
 
 	display_recommendations
