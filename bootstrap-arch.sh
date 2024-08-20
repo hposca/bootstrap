@@ -26,7 +26,6 @@ base_packages=(
   endeavouros-keyring
   curl
   git
-  python-pip
   ttf-font-awesome
   ttf-roboto-mono-nerd
   wget
@@ -38,81 +37,115 @@ terminal_packages=(
   aur/cht.sh-git
   aur/gogh-git
   bat
-  fdupes
   fx
   git-delta
   glow
-  htop
-  iftop
-  iotop
+  imagemagick
+  inotify-tools
   ipcalc
-  ncdu
-  neofetch
+  lazygit
   ranger
-  screenfetch
   sshfs
   tig
   tmux
   tree
-  w3m
   xclip
+  xxd
+  yq
   yt-dlp
   zsh
+  #
+  neofetch
+  screenfetch
+  #
+  cpupower
+  fdupes
+  gdu
+  htop
+  hwdetect
+  iftop
+  iotop
+  ncdu
+  #
+  lynx
+  w3m
+  # monitoring
+  aur/btop-gpu-git
+  aur/ookla-speedtest-bin
+  gkrellm
+  glances
+  gnome-system-monitor
+  prometheus-node-exporter
 )
 
 declare -a development_packages
 development_packages=(
+  #
+  aur/aws-cli-v2
+  aur/lazydocker
+  aur/neovim-remote
   aur/tfenv
-  aws-cli-v2
   aws-vault
-  bottom # Usage: btm
   direnv
   docker
   docker-buildx
   docker-compose
   docker-scan
   fzf
-  gdu
   git
   git-crypt
-  github-cli
   git-lfs
+  github-cli
   go
   golangci-lint
-  google-cloud-cli
-  google-cloud-cli-gke-gcloud-auth-plugin
-  helm
-  istio
+  graphviz
   jq
   k9s
-  kind
   kubectl
   kubectx
   kustomize
-  lazygit
   lua
   neovim
-  neovim-remote
   nodejs
   npm
-  python-pipx
-  python-pre-commit
-  python-pynvim
   ripgrep
   ruby
   rust
   tree-sitter
+  tree-sitter-cli
   yarn
   yq
+  # Python
+  ipython
+  python-black
+  python-ipdb
+  python-pip
+  python-pipenv
+  python-pipx
+  python-pre-commit
+  python-pylint
+  python-pynvim
+  # Bash
+  shellcheck
+  # Extras
+  # aur/argocd
+  # aur/google-cloud-cli
+  # aur/google-cloud-cli-gke-gcloud-auth-plugin
+  # aur/kind
+  # aur/rancher-k3d-bin
+  # helm
+  # istio
 )
 
 declare -a desktop_packages
 desktop_packages=(
+  aur/clementine
   aur/enpass-bin
   aur/rofi-greenclip
   aur/xkblayout-state-git
   barrier
   digikam
+  gnome-calculator
   gnucash
   gnucash-docs
   libreoffice-still
@@ -126,19 +159,17 @@ desktop_packages=(
   rofimoji
   xdotool
   #
-  nvidia
-  nvidia-settings
+  # nvidia
+  # nvidia-settings
   #
+  aur/librewolf-bin
+  aur/slack-desktop
+  aur/zoom
   chromium
   firefox
   firefox-developer-edition
-  aur/slack-desktop
-  aur/zoom
   #
-  gkrellm
   gparted
-  gnome-system-monitor
-  prometheus-node-exporter
   #
   virtualbox
   #
@@ -230,13 +261,7 @@ function install_terminal_tools() {
   git clone --depth 1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/
   git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-  log_info "Installing spaceship zsh theme..."
-  _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
-  git clone --depth 1 https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
-  ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
-
   log_info "Setting ZSH as the default shell..."
-
   chsh -s "$(command -v zsh)"
 
   log_info "Installing fzf..."
@@ -298,7 +323,7 @@ function install_development_tools() {
   log_info "Installing development tools - DONE"
 }
 
-# This function installs and configure dependencies for the dotfiles to work propertly
+# Installs and configure dependencies for the dotfiles to work propertly
 function prepare_dotfiles() {
   local -r clone_location="${HOME}/src/hposca/dotfiles"
   mkdir -p "${clone_location}"
@@ -306,13 +331,30 @@ function prepare_dotfiles() {
   log_info "Cloning dotfiles..."
   git clone --depth 1 https://github.com/hposca/dotfiles "${clone_location}"
 
-  log_info "Configuring oh-my-zsh theme..."
-  ZSH_CUSTOM="${ZSH_CUSTOM:-${HOME}/.oh-my-zsh/custom}"
-  git clone https://github.com/spaceship-prompt/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
-  ln -sf "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+  # NOTE
+  # It may be necessay to add a small sleep in async.zsh to avoid rendering problems:
+  # In /${HOME}/.oh-my-zsh/custom/themes/spaceship-prompt/async.zsh
+  #
+  # diff --git a/async.zsh b/async.zsh
+  # index de13e75..15740db 100644
+  # --- a/async.zsh
+  # +++ b/async.zsh
+  # @@ -28,6 +28,8 @@ _async_job() {
+  #  	# Disable xtrace as it would mangle the output.
+  #  	setopt localoptions noxtrace
+  #
+  # +  sleep 0.03
+  # +
+  #  	# Store start time for job.
+  #  	float -F duration=$EPOCHREALTIME
+  log_info "Installing spaceship zsh theme..."
+  _zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+  git clone --depth 1 https://github.com/denysdovhan/spaceship-prompt.git "${_zsh_custom}/themes/spaceship-prompt"
+  ln -s "${_zsh_custom}/themes/spaceship-prompt/spaceship.zsh-theme" "${_zsh_custom}/themes/spaceship.zsh-theme"
 
   log_info "Making sure directories exist..."
   mkdir -p "${HOME}/.config/alacritty/"
+  mkdir -p "${HOME}/.config/tmux/"
 
   # log_info "Configuring alacritty..."
   # mkdir -p "${HOME}/.config/alacritty"
@@ -326,7 +368,6 @@ function prepare_dotfiles() {
   ln -sf "$(readlink -f alacritty.yml)" "${HOME}/.config/alacritty/alacritty.yml"
   popd || exit
 
-  mkdir -p "${HOME}/.config/tmux/"
   log_info 'Installing Tmux Plugin Manager...'
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm --depth=1
   log_info 'Installing Tmux Plugins...'
@@ -337,10 +378,11 @@ function prepare_dotfiles() {
 function install_text_editor() {
   local -r dotfiles_location="${HOME}/src/hposca/dotfiles"
 
-  log_info "Cloning LazyVim..."
-  git clone --depth 1 https://github.com/LazyVim/starter "${HOME}/.config/LazyVim"
+  # log_info "Cloning LazyVim..."
+  # git clone --depth 1 https://github.com/LazyVim/starter "${HOME}/.config/LazyVim"
 
   log_info "Symlinking dotfiles..."
+  mkdir -p "${HOME}/.config/LazyVim/"
   pushd "${dotfiles_location}" || exit
   mv "${HOME}/.config/LazyVim/lua" "${HOME}/.config/LazyVim/lua-backup"
   ln -sf "$(readlink -f LazyVim/lua)" "${HOME}/.config/LazyVim/"
@@ -361,6 +403,7 @@ function enable_docker() {
 # First time they were installed (all at once) it failed, running one by one, later, worked.
 # This is why I'm installing them one by one
 function install_gstreamer() {
+  yay -Syu --noconfirm gstreamer
   yay -Syu --noconfirm gstreamer0.10-base-plugins
   yay -Syu --noconfirm gstreamer0.10-good-plugins
   yay -Syu --noconfirm gstreamer0.10-bad-plugins
@@ -437,10 +480,28 @@ export QT_SCREEN_SCALE_FACTORS=0.99
 export GDK_SCALE=1
 export GDK_DPI_SCALE=0.80
 
+---
+
 And this line into your ~/.Xresources :
 
 Xft.dpi: 120
 
+---
+
+It may be necessay to add a small sleep in spaceship's async.zsh to avoid rendering problems:
+In /${HOME}/.oh-my-zsh/custom/themes/spaceship-prompt/async.zsh
+
+diff --git a/async.zsh b/async.zsh
+index de13e75..15740db 100644
+--- a/async.zsh
++++ b/async.zsh
+@@ -28,6 +28,8 @@ _async_job() {
+ 	# Disable xtrace as it would mangle the output.
+ 	setopt localoptions noxtrace
+
++  sleep 0.03
+
+---
 EOF
 }
 
@@ -471,24 +532,24 @@ function main() {
   install_terminal_tools
   install_desktop_tools
 
-  xfce_caps_as_control
-
   install_development_tools
+  # install_istioctl
 
   prepare_dotfiles
   install_text_editor
 
   enable_docker
   install_gstreamer
-  install_system76_stuff
-  install_clevo_indicator
+
+  # xfce_caps_as_control
+  # install_system76_stuff
+  # install_clevo_indicator
+
   configure_syncthing
   enable_prometheus
   generate_barrier_certs
 
   display_recommendations
-
-  install_istioctl
 
   packages_after=$(yay -Q | wc -l)
   local -r duration=${SECONDS}
