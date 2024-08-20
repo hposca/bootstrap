@@ -366,6 +366,8 @@ function prepare_dotfiles() {
   ln -sf "$(readlink -f zshrc)" "${HOME}/.zshrc"
   mv "${HOME}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml.backup"
   ln -sf "$(readlink -f alacritty.yml)" "${HOME}/.config/alacritty/alacritty.yml"
+  ln -sf "$(readlink -f i3-scripts)" ~/.config/i3/scripts
+  ln -sf "$(readlink -f i3-config-endeavour)" ~/.config/i3/config
   popd || exit
 
   log_info 'Installing Tmux Plugin Manager...'
