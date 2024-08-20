@@ -355,16 +355,17 @@ function prepare_dotfiles() {
   mkdir -p "${HOME}/.config/alacritty/"
   mkdir -p "${HOME}/.config/tmux/"
 
-  # log_info "Configuring alacritty..."
-  # mkdir -p "${HOME}/.config/alacritty"
-  # cp /usr/share/doc/alacritty/example/alacritty.yml "${HOME}/.config/alacritty"
-
   log_info "Symlinking dotfiles..."
   pushd "${clone_location}" || exit
   ln -sf "$(readlink -f tmux.conf)" "${HOME}/.config/tmux/tmux.conf"
   ln -sf "$(readlink -f zshrc)" "${HOME}/.zshrc"
-  mv "${HOME}/.config/alacritty/alacritty.yml" "${HOME}/.config/alacritty/alacritty.yml.backup"
-  ln -sf "$(readlink -f alacritty.yml)" "${HOME}/.config/alacritty/alacritty.yml"
+
+  # cp /usr/share/doc/alacritty/example/alacritty.yml "${HOME}/.config/alacritty"
+  mv "${HOME}/.config/alacritty/alacritty.toml" "${HOME}/.config/alacritty/alacritty.toml.backup"
+  ln -sf "$(readlink -f alacritty.toml)" "${HOME}/.config/alacritty/alacritty.toml"
+
+  mv ~/.config/i3/scripts ~/.config/i3/scripts-original
+  mv ~/.config/i3/config ~/.config/i3/config-original
   ln -sf "$(readlink -f i3-scripts)" ~/.config/i3/scripts
   ln -sf "$(readlink -f i3-config-endeavour)" ~/.config/i3/config
   popd || exit
@@ -379,8 +380,8 @@ function prepare_dotfiles() {
 function install_text_editor() {
   local -r dotfiles_location="${HOME}/src/hposca/dotfiles"
 
-  # log_info "Cloning LazyVim..."
-  # git clone --depth 1 https://github.com/LazyVim/starter "${HOME}/.config/LazyVim"
+  log_info "Cloning LazyVim..."
+  git clone --depth 1 https://github.com/LazyVim/starter "${HOME}/.config/LazyVim"
 
   log_info "Symlinking dotfiles..."
   mkdir -p "${HOME}/.config/LazyVim/"
