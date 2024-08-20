@@ -366,8 +366,10 @@ function prepare_dotfiles() {
 
   mv ~/.config/i3/scripts ~/.config/i3/scripts-original
   mv ~/.config/i3/config ~/.config/i3/config-original
+  mv ~/.config/i3/i3blocks.conf ~/.config/i3/i3blocks.conf-original
   ln -sf "$(readlink -f i3-scripts)" ~/.config/i3/scripts
   ln -sf "$(readlink -f i3-config-endeavour)" ~/.config/i3/config
+  ln -sf "$(readlink -f i3blocks.conf)" ~/.config/i3/i3blocks.conf
   popd || exit
 
   log_info 'Installing Tmux Plugin Manager...'
