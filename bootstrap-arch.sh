@@ -139,7 +139,6 @@ development_packages=(
 
 declare -a desktop_packages
 desktop_packages=(
-  aur/clementine
   aur/enpass-bin
   aur/rofi-greenclip
   aur/xkblayout-state-git
@@ -404,7 +403,8 @@ function enable_docker() {
 
 # First time they were installed (all at once) it failed, running one by one, later, worked.
 # This is why I'm installing them one by one
-function install_gstreamer() {
+function install_clementine() {
+  yay -Syu --noconfirm aur/clementine
   yay -Syu --noconfirm gstreamer
   yay -Syu --noconfirm gstreamer0.10-base-plugins
   yay -Syu --noconfirm gstreamer0.10-good-plugins
@@ -541,7 +541,7 @@ function main() {
   install_text_editor
 
   enable_docker
-  install_gstreamer
+  # install_clementine
 
   # xfce_caps_as_control
   # install_system76_stuff
