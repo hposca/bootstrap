@@ -404,15 +404,15 @@ function enable_docker() {
   # NOTE: Will need to logout-login for it to take effect
 }
 
-# First time they were installed (all at once) it failed, running one by one, later, worked.
-# This is why I'm installing them one by one
 function install_clementine() {
-  yay -Syu --noconfirm aur/clementine
-  yay -Syu --noconfirm gstreamer
-  yay -Syu --noconfirm gstreamer0.10-base-plugins
-  yay -Syu --noconfirm gstreamer0.10-good-plugins
-  yay -Syu --noconfirm gstreamer0.10-bad-plugins
-  yay -Syu --noconfirm gstreamer0.10-ugly-plugins
+  yay -Syu --noconfirm \
+    aur/clementine \
+    gst-plugins-bad \
+    gst-plugins-bad-libs \
+    gst-plugins-base \
+    gst-plugins-base-libs \
+    gst-plugins-good \
+    gst-plugins-ugly
 }
 
 function install_system76_stuff() {
@@ -536,6 +536,7 @@ function main() {
   install_base
   install_terminal_tools
   install_desktop_tools
+  install_clementine
 
   install_development_tools
   # install_istioctl
@@ -544,7 +545,6 @@ function main() {
   install_text_editor
 
   enable_docker
-  # install_clementine
 
   # xfce_caps_as_control
   # install_system76_stuff
