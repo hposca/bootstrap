@@ -82,6 +82,7 @@ declare -a development_packages
 development_packages=(
   #
   aur/aws-cli-v2
+  aur/kind
   aur/lazydocker
   aur/neovim-remote
   aur/tfenv
@@ -99,6 +100,7 @@ development_packages=(
   go
   golangci-lint
   graphviz
+  helm
   jq
   k9s
   kubectl
@@ -131,9 +133,7 @@ development_packages=(
   # aur/argocd
   # aur/google-cloud-cli
   # aur/google-cloud-cli-gke-gcloud-auth-plugin
-  # aur/kind
   # aur/rancher-k3d-bin
-  # helm
   # istio
 )
 
