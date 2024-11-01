@@ -143,6 +143,7 @@ desktop_packages=(
   aur/rofi-greenclip
   aur/xkblayout-state-git
   barrier
+  blueberry
   digikam
   gnome-calculator
   gnucash
